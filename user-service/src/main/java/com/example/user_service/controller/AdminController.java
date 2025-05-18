@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.user_service.dto.AdminDTO;
 import com.example.user_service.dto.CreateAdminDTO;
+import com.example.user_service.dto.LoginResponseDTO;
 import com.example.user_service.service.AdminService;
 
 import jakarta.validation.Valid;
@@ -41,16 +42,16 @@ public class AdminController {
             return ResponseEntity.badRequest()
                 .body(java.util.Collections.singletonMap("message", e.getMessage()));
         }
-    }
+    }   
     @PostMapping("/login")
     public ResponseEntity<?> adminLogin(@Valid @RequestBody CreateAdminDTO createAdminDTO) {
         try {
-            boolean isAuthenticated = adminService.adminLogin(createAdminDTO.getEmail(), createAdminDTO.getPassword());
-            if (!isAuthenticated) {
+            LoginResponseDTO loginResponse = adminService.adminLogin(createAdminDTO.getEmail(), createAdminDTO.getPassword());
+            if (loginResponse == null) {
                 return ResponseEntity.status(401)
                     .body(java.util.Collections.singletonMap("message", "Invalid email or password"));
             }
-            return ResponseEntity.ok(java.util.Collections.singletonMap("message", "Login successful"));
+            return ResponseEntity.ok(loginResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                 .body(java.util.Collections.singletonMap("message", e.getMessage()));

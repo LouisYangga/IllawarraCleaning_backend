@@ -5,19 +5,23 @@ import org.springframework.stereotype.Service;
 
 import com.example.user_service.dto.AdminDTO;
 import com.example.user_service.dto.CreateAdminDTO;
+import com.example.user_service.dto.LoginResponseDTO;
 import com.example.user_service.entity.Admin;
 import com.example.user_service.mapper.AdminMapper;
 import com.example.user_service.repository.AdminRepository;
+import com.example.user_service.util.JwtUtil;
 import com.example.user_service.util.PasswordHashUtil;
 
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
     private final AdminMapper adminMapper;
+    private final JwtUtil jwtUtil;
 
-    public AdminService(AdminRepository adminRepository, AdminMapper adminMapper) {
+    public AdminService(AdminRepository adminRepository, AdminMapper adminMapper, JwtUtil jwtUtil) {
         this.adminMapper = adminMapper;
         this.adminRepository = adminRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public AdminDTO createAdmin(CreateAdminDTO createAdminDTO) {
@@ -38,7 +42,7 @@ public class AdminService {
         Admin savedAdmin = adminRepository.save(admin);
         return adminMapper.toDTO(savedAdmin);
     }    
-    public boolean adminLogin(String email, String password) {
+    public LoginResponseDTO adminLogin(String email, String password) {
         // Logic to check admin login
         Admin admin = adminRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Admin not found with this email"));
@@ -47,9 +51,15 @@ public class AdminService {
         if (PasswordHashUtil.verifyPassword(password, admin.getPassword(), salt)) {
             admin.setLastLoginDate(java.time.LocalDate.now());
             adminRepository.save(admin);
-            return true;
+            
+            String token = jwtUtil.generateToken(admin.getEmail(), "ADMIN");
+            return new LoginResponseDTO(
+                "Login successful",
+                token,
+                adminMapper.toDTO(admin)
+            );
         }
-        return false;
+        return null;
     }
 
     public AdminDTO getAdminByEmail(String email) {
