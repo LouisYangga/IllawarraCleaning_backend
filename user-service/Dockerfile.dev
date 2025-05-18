@@ -1,0 +1,14 @@
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+COPY target ./target
+
+ENV SPRING_DEVTOOLS_RESTART_ENABLED=true
+ENV SPRING_DEVTOOLS_LIVERELOAD_ENABLED=true
+
+ENTRYPOINT ["./mvnw", "spring-boot:run"]
