@@ -57,6 +57,15 @@ public class AdminController {
                 .body(java.util.Collections.singletonMap("message", e.getMessage()));
         }
     }
+    @GetMapping
+    public ResponseEntity<?> getAllAdmins() {
+        try {
+            return ResponseEntity.ok(adminService.getAllAdmins());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body(java.util.Collections.singletonMap("message", e.getMessage()));
+        }
+    }
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getAdminByEmail(@PathVariable @Email String email) {
         try {

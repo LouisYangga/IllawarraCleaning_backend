@@ -60,7 +60,7 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserDTO updateUserDto) {
         try {
             UserDTO updatedUser = userService.updateUserByEmail(updateUserDto.getEmail(), updateUserDto);

@@ -1,6 +1,9 @@
 package com.example.user_service.service;
 
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.example.user_service.dto.AdminDTO;
@@ -61,7 +64,12 @@ public class AdminService {
         }
         return null;
     }
-
+    public List<AdminDTO> getAllAdmins() {
+        // Logic to get all admins
+        return adminRepository.findAll().stream()
+                .map(adminMapper::toDTO)
+                .collect(Collectors.toList());
+    }
     public AdminDTO getAdminByEmail(String email) {
         // Logic to get an admin by email
         Admin admin = adminRepository.findByEmail(email)

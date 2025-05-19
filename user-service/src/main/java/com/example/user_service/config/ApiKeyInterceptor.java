@@ -13,7 +13,8 @@ public class ApiKeyInterceptor implements HandlerInterceptor {
 
     public ApiKeyInterceptor(Environment environment) {
         this.environment = environment;
-    }    @Override
+    }    
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("Checking API key for request: " + request.getRequestURI());
         String providedApiKey = request.getHeader("X-API-Key");
