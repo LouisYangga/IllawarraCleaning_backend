@@ -64,6 +64,7 @@ public class AdminService {
         }
         return null;
     }
+    
     public List<AdminDTO> getAllAdmins() {
         // Logic to get all admins
         return adminRepository.findAll().stream()
