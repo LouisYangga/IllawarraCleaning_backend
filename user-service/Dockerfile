@@ -1,8 +1,44 @@
-FROM openjdk:17-jdk-slim
+# ---------- Build Stage ----------
+FROM eclipse-temurin:17-jdk-jammy AS builder
+
+WORKDIR /build
+
+# Copy Maven wrapper and dependencies
+COPY mvnw ./
+COPY .mvn .mvn
+COPY pom.xml ./
+RUN ./mvnw dependency:go-offline
+
+# Copy source code
+COPY src ./src
+
+# Build the project
+RUN ./mvnw clean package -DskipTests
+
+# ---------- Production Stage ----------
+FROM eclipse-temurin:17-jre-jammy
+
 WORKDIR /app
-COPY target/*.jar app.jar
-ENV SPRING_DEVTOOLS_RESTART_ENABLED=true
-ENV SPRING_DEVTOOLS_ADD_PROPERTIES=true
-ENTRYPOINT ["java", "-Dspring.devtools.restart.enabled=true", "-Dspring-boot.run.jvmArguments='-Dspring.devtools.restart.enabled=true'", "-jar", "app.jar"]
+
+# Create a non-root user for security
+RUN groupadd -r spring && useradd -r -g spring spring
+
+# Copy jar from builder stage
+COPY --from=builder /build/target/*.jar app.jar
+
+# Set file permissions
+RUN chown spring:spring /app/app.jar
+USER spring
+
+# Use production profile
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Expose application port
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "-Dspring-boot.run.jvmArguments='-Dspring.devtools.restart.enabled=true'", "app.jar"]
+
+# Health check (optional)
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD curl --fail http://localhost:8080/actuator/health || exit 1
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./user-service:/app
+      - ./user-service/pom.xml:/app/pom.xml
+      - ./user-service/mvnw:/app/mvnw
+      - /c/Users/COMPUTER/.m2:/root/.m2
+    env_file:
+      - ./user-service/.env
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_TOOL_OPTIONS: >-
+        -Dspring.devtools.restart.enabled=true
+        -Dspring-boot.run.fork=false
+    networks:
+      - illawarra-network
+    restart: unless-stopped  
+networks:
+  illawarra-network:
+    driver: bridge
+
+

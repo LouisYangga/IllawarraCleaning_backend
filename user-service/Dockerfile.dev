@@ -1,14 +1,18 @@
-FROM openjdk:17-jdk-slim
+# Dev-focused image with JDK for compilation
+FROM eclipse-temurin:17-jdk-jammy
+
 WORKDIR /app
+
+# Copy Maven wrapper and POM first (for dependency caching)
 COPY mvnw .
 COPY .mvn .mvn
-COPY pom.xml .
+COPY pom.xml . 
+
 RUN ./mvnw dependency:go-offline
 
-COPY src ./src
-COPY target ./target
+COPY src src
+# Expose ports for app and debugging
+EXPOSE 8080
 
-ENV SPRING_DEVTOOLS_RESTART_ENABLED=true
-ENV SPRING_DEVTOOLS_LIVERELOAD_ENABLED=true
-
-ENTRYPOINT ["./mvnw", "spring-boot:run"]
+# This is crucial - run with fork to allow DevTools to work properly
+CMD ["./mvnw", "spring-boot:run","-Dspring-boot.run.fork=false"]
