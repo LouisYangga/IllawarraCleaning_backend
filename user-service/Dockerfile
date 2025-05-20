@@ -1,44 +1,37 @@
-# ---------- Build Stage ----------
+# Stage 1: Build
 FROM eclipse-temurin:17-jdk-jammy AS builder
 
-WORKDIR /build
+WORKDIR /app
 
-# Copy Maven wrapper and dependencies
-COPY mvnw ./
+# Copy Maven wrapper and project files
+COPY mvnw .
 COPY .mvn .mvn
-COPY pom.xml ./
+COPY pom.xml .
 RUN ./mvnw dependency:go-offline
 
-# Copy source code
-COPY src ./src
-
-# Build the project
+# Copy source code and build
+COPY src src
 RUN ./mvnw clean package -DskipTests
 
-# ---------- Production Stage ----------
+# Stage 2: Production image
 FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
-# Create a non-root user for security
-RUN groupadd -r spring && useradd -r -g spring spring
+# Add a non-root user for security
+RUN useradd -m spring
 
-# Copy jar from builder stage
-COPY --from=builder /build/target/*.jar app.jar
+# Copy jar from builder
+COPY --from=builder /app/target/*.jar app.jar
+RUN chown spring:spring app.jar
 
-# Set file permissions
-RUN chown spring:spring /app/app.jar
 USER spring
 
-# Use production profile
+# Optional: set environment profile
 ENV SPRING_PROFILES_ACTIVE=prod
 
-# Expose application port
+# Expose port
 EXPOSE 8080
 
-# Health check (optional)
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD curl --fail http://localhost:8080/actuator/health || exit 1
-
-# Run the application
+# Run the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
