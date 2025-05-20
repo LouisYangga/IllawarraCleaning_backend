@@ -1,0 +1,18 @@
+# Dev-focused image with JDK for compilation
+FROM eclipse-temurin:17-jdk-jammy
+
+WORKDIR /app
+
+# Copy Maven wrapper and POM first (for dependency caching)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml . 
+
+RUN ./mvnw dependency:go-offline
+
+COPY src src
+# Expose ports for app and debugging
+EXPOSE 8081
+
+# This is crucial - run with fork to allow DevTools to work properly
+CMD ["./mvnw", "spring-boot:run","-Dspring-boot.run.fork=false"]
