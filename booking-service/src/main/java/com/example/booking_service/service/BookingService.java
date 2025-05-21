@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.booking_service.dto.BookingDTO;
 import com.example.booking_service.dto.CreateBookingDTO;
 import com.example.booking_service.dto.UpdateBookingDTO;
+import com.example.booking_service.dto.UserCreationEventDTO;
 import com.example.booking_service.entity.Booking;
 import com.example.booking_service.entity.BookingStatus;
 import com.example.booking_service.mapper.BookingMapper;
@@ -39,6 +40,17 @@ public class BookingService {
         Booking booking = bookingMapper.toEntity(createBookingDTO);
         booking.setStatus(BookingStatus.PENDING); // Set initial status
         Booking savedBooking = bookingRepository.save(booking);
+
+        //Publish user creation event to notify user services
+        UserCreationEventDTO userCreationEvent = new UserCreationEventDTO(
+                booking.getFirstName(),
+                booking.getLastName(),
+                booking.getUserEmail(),
+                String.valueOf(booking.getPhoneNumber())
+        );
+
+        //publish Event to message broker (e.g., Kafka, RabbitMQ)
+        // userEventPublisher.publishEvent(userCreationEvent);
         return bookingMapper.toDTO(savedBooking);
     }
     

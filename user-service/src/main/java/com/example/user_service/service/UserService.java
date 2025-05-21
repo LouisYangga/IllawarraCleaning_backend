@@ -79,7 +79,14 @@ public class UserService {
     }
 
     // Check if user exists
-    public boolean existsById(Long id) {
-        return userRepository.existsById(id);
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public void incrementBookingCount(String email) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            user.incrementBookingCount();
+            userRepository.save(user);
+        });
     }
 }
