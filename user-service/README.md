@@ -69,8 +69,7 @@ All API endpoints (except specifically excluded ones) require:
   "email": "user@example.com",
   "firstName": "John",
   "lastName": "Doe",
-  "phoneNumber": 1234567890,
-  "address": "123 Main St"
+  "phoneNumber": 1234567890
 }
 ```
 
@@ -80,8 +79,7 @@ All API endpoints (except specifically excluded ones) require:
   "email": "user@example.com",
   "firstName": "John",
   "lastName": "Smith",
-  "phoneNumber": 9876543210,
-  "address": "456 New Address St"
+  "phoneNumber": 9876543210
 }
 ```
 

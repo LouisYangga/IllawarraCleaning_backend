@@ -59,10 +59,7 @@ public class UserService {
     public UserDTO getUserByName(String firstName, String lastName) {
         return userMapper.toDTO(userRepository.findByFirstNameAndLastName(firstName, lastName));
     }
-
-    public UserDTO getUserByAddress(String address) {
-        return userMapper.toDTO(userRepository.findByAddress(address));
-    }    
+    
     // Update
     @Transactional
     public UserDTO updateUserByEmail(String email, UpdateUserDTO updateUserDTO) {

@@ -19,7 +19,6 @@ public class UserMapper {
             user.getFirstName(),
             user.getLastName(),
             user.getEmail(),
-            user.getAddress(),
             user.getPhoneNumber(),
             user.getCreatedDate(),
             user.getUpdatedDate()
@@ -35,7 +34,6 @@ public class UserMapper {
         user.setFirstName(createUserDTO.getFirstName());
         user.setLastName(createUserDTO.getLastName());
         user.setEmail(createUserDTO.getEmail());
-        user.setAddress(createUserDTO.getAddress());
         user.setPhoneNumber(createUserDTO.getPhoneNumber());
         return user;
     }
@@ -50,9 +48,6 @@ public class UserMapper {
         }
         if (updateUserDTO.getLastName() != null) {
             user.setLastName(updateUserDTO.getLastName());
-        }
-        if (updateUserDTO.getAddress() != null) {
-            user.setAddress(updateUserDTO.getAddress());
         }
         if (updateUserDTO.getPhoneNumber() != null) {
             user.setPhoneNumber(updateUserDTO.getPhoneNumber());

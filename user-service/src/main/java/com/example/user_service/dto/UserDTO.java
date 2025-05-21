@@ -13,7 +13,6 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private String address;
     private Long phoneNumber;
     private LocalDate createdDate;
     private LocalDate updatedDate;

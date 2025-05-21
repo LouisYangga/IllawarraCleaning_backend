@@ -37,12 +37,10 @@ public class User {
     @Email(message = "Please provide a valid email address")
     private String email;
 
-    @NotBlank(message = "Address is required")
-    private String address;
-
     @NotNull(message = "Phone number is required")
     private Long phoneNumber;
 
+    private Integer bookingCount = 0;
     private LocalDate createdDate;
     private LocalDate updatedDate;
 
@@ -55,5 +53,14 @@ public class User {
     public void preUpdate() {
         this.updatedDate = LocalDate.now();
     }
+    public void incrementBookingCount() {
+        if(this.bookingCount == null) {
+            this.bookingCount = 1;
+        }
+        else {
+            this.bookingCount++;
+        }
+    }
+
 }
 
