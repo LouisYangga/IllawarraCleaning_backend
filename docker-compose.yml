@@ -4,7 +4,7 @@ services:
   user-service:
     build:
       context: ./user-service
-      dockerfile: Dockerfile
+      dockerfile: DockerFile
     ports:
       - "8080:8080"
     env_file:

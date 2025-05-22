@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.example.booking_service.entity.Address;
 import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,6 @@ public class CreateBookingDTO {
     private double price;
     private String notes;
     @NotNull(message = "Address is required")
+    @Embedded
     private Address address;
 }
