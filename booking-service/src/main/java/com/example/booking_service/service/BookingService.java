@@ -21,8 +21,10 @@ import com.example.booking_service.repository.BookingRepository;
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
-    
-    public BookingService(BookingRepository bookingRepository, BookingMapper bookingMapper) {
+    private final UserEventPublisher userEventPublisher;
+    public BookingService(BookingRepository bookingRepository, BookingMapper bookingMapper,
+    UserEventPublisher userEventPublisher) {
+        this.userEventPublisher = userEventPublisher;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
     }
@@ -46,11 +48,11 @@ public class BookingService {
                 booking.getFirstName(),
                 booking.getLastName(),
                 booking.getUserEmail(),
-                String.valueOf(booking.getPhoneNumber())
+                booking.getPhoneNumber()
         );
 
         //publish Event to message broker (e.g., Kafka, RabbitMQ)
-        // userEventPublisher.publishEvent(userCreationEvent);
+        userEventPublisher.publishUserEvent(userCreationEvent);
         return bookingMapper.toDTO(savedBooking);
     }
     

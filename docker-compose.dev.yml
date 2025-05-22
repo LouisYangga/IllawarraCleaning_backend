@@ -1,6 +1,31 @@
 version: '3.8'
 
 services:
+  booking-service:
+      build:
+        context: ./booking-service
+        dockerfile: Dockerfile.dev
+      ports:
+        - "8082:8082"
+      volumes:
+        - ./booking-service:/app
+        - ./booking-service/pom.xml:/app/pom.xml
+        - ./booking-service/mvnw:/app/mvnw
+        - /c/Users/COMPUTER/.m2:/root/.m2
+      env_file:
+        - ./booking-service/.env
+      environment:
+        SPRING_PROFILES_ACTIVE: dev
+        SPRING_RABBITMQ_HOST: rabbitmq
+        JAVA_TOOL_OPTIONS: >-
+          -Dspring.devtools.restart.enabled=true
+          -Dspring-boot.run.fork=false
+      depends_on:
+        - rabbitmq
+      networks:
+        - illawarra-network
+      restart: unless-stopped
+
   user-service:
     build:
       context: ./user-service
@@ -16,14 +41,37 @@ services:
       - ./user-service/.env
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      SPRING_RABBITMQ_HOST: rabbitmq
       JAVA_TOOL_OPTIONS: >-
         -Dspring.devtools.restart.enabled=true
         -Dspring-boot.run.fork=false
+    depends_on:
+      - rabbitmq
     networks:
       - illawarra-network
     restart: unless-stopped  
+
+    rabbitmq:
+      image: rabbitmq:3-management
+      ports:
+        - "5672:5672"   # AMQP protocol port
+        - "15672:15672" # Management UI port
+      environment:
+        - RABBITMQ_DEFAULT_USER=${SPRING_RABBITMQ_USERNAME}
+        - RABBITMQ_DEFAULT_PASS=${SPRING_RABBITMQ_PASSWORD}
+      volumes:
+        - rabbitmq_data:/var/lib/rabbitmq
+      networks:
+        - illawarra-network
+      healthcheck:
+        test: ["CMD", "rabbitmqctl", "status"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
 networks:
   illawarra-network:
     driver: bridge
+volumes:
+  rabbitmq_data:
 
 

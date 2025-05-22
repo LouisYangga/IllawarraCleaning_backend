@@ -31,7 +31,7 @@ USER spring
 ENV SPRING_PROFILES_ACTIVE=prod
 
 # Expose port
-EXPOSE ${SERVER_PORT:-8080}
+EXPOSE ${SERVER_PORT:-8082}
 
 # Run the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
