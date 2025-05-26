@@ -1,14 +1,22 @@
 package com.example.booking_service.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -20,7 +28,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_sequence")
+    @SequenceGenerator(name = "booking_sequence", sequenceName = "booking_seq", initialValue = 10000)
     private Long id;
 
     @NotNull(message = "Email is required")
@@ -31,7 +40,7 @@ public class Booking {
 
     @NotNull(message = "Service date is required")
     private LocalDateTime scheduledAt;
-    private String serviceType;
+    private ServiceType serviceType; // END_OF_LEASE. DEEP_CLEANING, REGULAR_CLEANING
     private BookingStatus status;  // PENDING, CONFIRMED, CANCELLED, COMPLETED
     private double duration; //in hours
     private double price; //in dollars
@@ -43,6 +52,11 @@ public class Booking {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @ElementCollection(targetClass = AddOns.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "booking_addons", joinColumns = @JoinColumn(name = "booking_id"))
+    private Set<AddOns> addons = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

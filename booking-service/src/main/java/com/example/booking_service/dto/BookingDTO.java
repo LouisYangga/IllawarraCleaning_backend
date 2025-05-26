@@ -1,12 +1,17 @@
 package com.example.booking_service.dto;
 
 import java.time.LocalDateTime;
-import com.example.booking_service.entity.Address;
-import com.example.booking_service.entity.BookingStatus;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.example.booking_service.entity.Address;
+import com.example.booking_service.entity.AddOns;
+import com.example.booking_service.entity.BookingStatus;
+import com.example.booking_service.entity.ServiceType;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +23,7 @@ public class BookingDTO {
     private String lastName;
     private Long phoneNumber;
     private LocalDateTime scheduledAt;
-    private String serviceType;
+    private ServiceType serviceType;
     private BookingStatus status;
     private double duration;
     private double price;
@@ -26,4 +31,5 @@ public class BookingDTO {
     private Address address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Set<AddOns> addons = new HashSet<>();
 }

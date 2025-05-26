@@ -15,22 +15,23 @@ public class BookingMapper {
             return null;
         }
         
-        return new BookingDTO(
-            booking.getId(),
-            booking.getUserEmail(),
-            booking.getFirstName(),
-            booking.getLastName(),
-            booking.getPhoneNumber(),
-            booking.getScheduledAt(),
-            booking.getServiceType(),
-            booking.getStatus(),
-            booking.getDuration(),
-            booking.getPrice(),
-            booking.getNotes(),
-            booking.getAddress(),
-            booking.getCreatedAt(),
-            booking.getUpdatedAt()
-        );
+        BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.setId(booking.getId());
+        bookingDTO.setUserEmail(booking.getUserEmail());
+        bookingDTO.setFirstName(booking.getFirstName());
+        bookingDTO.setLastName(booking.getLastName());
+        bookingDTO.setPhoneNumber(booking.getPhoneNumber());
+        bookingDTO.setScheduledAt(booking.getScheduledAt());
+        bookingDTO.setServiceType(booking.getServiceType());
+        bookingDTO.setStatus(booking.getStatus());
+        bookingDTO.setDuration(booking.getDuration());
+        bookingDTO.setPrice(booking.getPrice());
+        bookingDTO.setNotes(booking.getNotes());
+        bookingDTO.setAddress(booking.getAddress());
+        bookingDTO.setCreatedAt(booking.getCreatedAt());
+        bookingDTO.setUpdatedAt(booking.getUpdatedAt());
+        bookingDTO.setAddons(booking.getAddons());
+        return bookingDTO;
     }
     
     public Booking toEntity(CreateBookingDTO createBookingDTO) {

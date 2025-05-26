@@ -62,8 +62,15 @@ public class BookingController {
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<?> getBookingsByStatus(@PathVariable BookingStatus status) {
-        List<BookingDTO> bookings = bookingService.getBookingsByStatus(status);
+    public ResponseEntity<?> getBookingsByStatus(@PathVariable String status) {
+        BookingStatus bookingStatus;
+        try {
+            bookingStatus = BookingStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return ResponseEntity.badRequest()
+                .body(java.util.Collections.singletonMap("message", "Invalid status value. Allowed values: " + java.util.Arrays.toString(BookingStatus.values())));
+        }
+        List<BookingDTO> bookings = bookingService.getBookingsByStatus(bookingStatus);
         if (bookings.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -89,15 +96,31 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> updateBookingStatus(@PathVariable Long id, @RequestParam BookingStatus status) {
-        return bookingService.updateBookingStatus(id, status)
+    public ResponseEntity<?> updateBookingStatus(@PathVariable Long id, @RequestParam String status) {
+        BookingStatus bookingStatus;
+        try {
+            bookingStatus = BookingStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return ResponseEntity.badRequest()
+                .body(java.util.Collections.singletonMap("message", "Invalid status value. Allowed values: " + java.util.Arrays.toString(BookingStatus.values())));
+        }
+        return bookingService.updateBookingStatus(id, bookingStatus)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
+        BookingDTO deletedBooking = bookingService.getBookingById(id).orElse(null);
+        if (deletedBooking == null) {
+            return ResponseEntity.notFound().build();
+        }
         bookingService.deleteBooking(id);
-        return ResponseEntity.ok().build();
+        String message = String.format(
+            "Booking with ID %d for email %s was deleted for schedule %s.",
+            id,
+            deletedBooking.getUserEmail(),
+            deletedBooking.getScheduledAt()
+        );
+        return ResponseEntity.ok(java.util.Collections.singletonMap("message", message));
     }
 }
