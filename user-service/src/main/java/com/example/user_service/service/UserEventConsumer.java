@@ -20,6 +20,7 @@ public class UserEventConsumer {
             userService.incrementBookingCount(event.getEmail());
         } else {
             userService.createUser(dto);
+            userService.incrementBookingCount(event.getEmail());
         }
     }
 }

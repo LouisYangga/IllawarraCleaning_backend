@@ -20,6 +20,7 @@ public class UserMapper {
             user.getLastName(),
             user.getEmail(),
             user.getPhoneNumber(),
+            user.getBookingCount(),
             user.getCreatedDate(),
             user.getUpdatedDate()
         );

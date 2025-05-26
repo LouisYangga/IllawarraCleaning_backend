@@ -14,6 +14,7 @@ public class UserDTO {
     private String lastName;
     private String email;
     private Long phoneNumber;
+    private Integer bookingCount;
     private LocalDate createdDate;
     private LocalDate updatedDate;
 }
