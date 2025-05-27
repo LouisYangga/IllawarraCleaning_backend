@@ -88,10 +88,10 @@ public class BookingMapper {
         if (updateBookingDTO.getStatus() != null) {
             booking.setStatus(updateBookingDTO.getStatus());
         }
-        if (updateBookingDTO.getDuration() > 0) {
+        if (updateBookingDTO.getDuration()!=null && updateBookingDTO.getDuration() > 0) {
             booking.setDuration(updateBookingDTO.getDuration());
         }
-        if (updateBookingDTO.getPrice() > 0) {
+        if (updateBookingDTO.getPrice()!=null && updateBookingDTO.getPrice() > 0) {
             booking.setPrice(updateBookingDTO.getPrice());
         }
         if (updateBookingDTO.getAddress() != null) {

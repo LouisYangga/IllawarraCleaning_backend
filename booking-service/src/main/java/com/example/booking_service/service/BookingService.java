@@ -59,30 +59,30 @@ public class BookingService {
     
     // Read operations
     public List<BookingDTO> getAllBookings() {
-        return bookingRepository.findAll().stream()
+        return bookingRepository.findAllWithAddons().stream()
                 .map(bookingMapper::toDTO)
                 .collect(Collectors.toList());
     }
     
     public Optional<BookingDTO> getBookingById(Long id) {
-        return bookingRepository.findById(id)
+        return bookingRepository.findByIdWithAddons(id)
                 .map(bookingMapper::toDTO);
     }
     
     public List<BookingDTO> getBookingsByEmail(String email) {
-        return bookingRepository.findByUserEmail(email).stream()
+        return bookingRepository.findByUserEmailWithAddons(email).stream()
                 .map(bookingMapper::toDTO)
                 .collect(Collectors.toList());
     }
     
     public List<BookingDTO> getBookingsByStatus(BookingStatus status) {
-        return bookingRepository.findByStatus(status).stream()
+        return bookingRepository.findByStatusWithAddons(status).stream()
                 .map(bookingMapper::toDTO)
                 .collect(Collectors.toList());
     }
     
     public List<BookingDTO> getBookingsByDateRange(LocalDateTime start, LocalDateTime end) {
-        return bookingRepository.findByScheduledAtBetween(start, end).stream()
+        return bookingRepository.findByScheduledAtBetweenWithAddons(start, end).stream()
                 .map(bookingMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -107,7 +107,7 @@ public class BookingService {
     // Status Update
     @Transactional
     public Optional<BookingDTO> updateBookingStatus(Long id, BookingStatus newStatus) {
-        return bookingRepository.findById(id)
+        return bookingRepository.findByIdWithAddons(id)
                 .map(existingBooking -> {
                     existingBooking.setStatus(newStatus);
                     Booking savedBooking = bookingRepository.save(existingBooking);
