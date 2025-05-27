@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -40,7 +41,10 @@ public class Booking {
 
     @NotNull(message = "Service date is required")
     private LocalDateTime scheduledAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ServiceType serviceType; // END_OF_LEASE. DEEP_CLEANING, REGULAR_CLEANING
+    @Enumerated(EnumType.STRING)
     private BookingStatus status;  // PENDING, CONFIRMED, CANCELLED, COMPLETED
     private double duration; //in hours
     private double price; //in dollars

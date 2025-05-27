@@ -1,9 +1,10 @@
-package com.example.user_service.service;
+package com.example.user_service.listener;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import com.example.user_service.dto.CreateUserDTO;
+import com.example.user_service.service.UserService;
 
 @Service
 public class UserEventConsumer {

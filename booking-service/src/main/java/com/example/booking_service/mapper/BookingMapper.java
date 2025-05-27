@@ -1,15 +1,23 @@
 package com.example.booking_service.mapper;
 
+import java.util.HashSet;
+
 import org.springframework.stereotype.Component;
 
 import com.example.booking_service.dto.BookingDTO;
 import com.example.booking_service.dto.CreateBookingDTO;
 import com.example.booking_service.dto.UpdateBookingDTO;
 import com.example.booking_service.entity.Booking;
+import com.example.booking_service.validator.AddOnsValidator;
 
 @Component
 public class BookingMapper {
-    
+    private final AddOnsValidator addOnsValidator;
+
+    public BookingMapper(AddOnsValidator addOnsValidator) {
+        this.addOnsValidator = addOnsValidator;
+    }
+
     public BookingDTO toDTO(Booking booking) {
         if (booking == null) {
             return null;
@@ -50,6 +58,9 @@ public class BookingMapper {
         booking.setPrice(createBookingDTO.getPrice());
         booking.setAddress(createBookingDTO.getAddress());
         booking.setNotes(createBookingDTO.getNotes());
+        // Handle empty addons
+        booking.setAddons(createBookingDTO.getAddons() != null ? 
+            createBookingDTO.getAddons() : new HashSet<>());
         
         return booking;
     }
@@ -88,6 +99,27 @@ public class BookingMapper {
         }
         if (updateBookingDTO.getNotes() != null) {
             booking.setNotes(updateBookingDTO.getNotes());
+        }
+
+        // Handle addons update with validation
+        if (updateBookingDTO.getAddons() != null) {
+            addOnsValidator.validateAddOnsUpdate(updateBookingDTO.getAddons());
+            
+            if (updateBookingDTO.getAddons().getReplace() != null) {
+                booking.setAddons(new HashSet<>(updateBookingDTO.getAddons().getReplace()));
+            } else {
+                if (booking.getAddons() == null) {
+                    booking.setAddons(new HashSet<>());
+                }
+                
+                if (updateBookingDTO.getAddons().getAdd() != null) {
+                    booking.getAddons().addAll(updateBookingDTO.getAddons().getAdd());
+                }
+                
+                if (updateBookingDTO.getAddons().getRemove() != null) {
+                    booking.getAddons().removeAll(updateBookingDTO.getAddons().getRemove());
+                }
+            }
         }
     }
 }

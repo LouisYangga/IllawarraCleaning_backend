@@ -18,6 +18,7 @@ import com.example.booking_service.mapper.BookingMapper;
 import com.example.booking_service.repository.BookingRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
