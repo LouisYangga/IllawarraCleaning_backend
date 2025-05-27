@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.example.booking_service.entity.Address;
 import com.example.booking_service.entity.ServiceType;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.example.booking_service.entity.AddOns;
 import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Embedded;
@@ -37,6 +39,6 @@ public class CreateBookingDTO {
     @NotNull(message = "Address is required")
     @Embedded
     private Address address;
-    
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     private Set<AddOns> addons = new HashSet<>();
 }
