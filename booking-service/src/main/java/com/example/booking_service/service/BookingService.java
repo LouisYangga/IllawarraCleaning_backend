@@ -103,7 +103,7 @@ public class BookingService {
     // Update
     @Transactional
     public Optional<BookingDTO> updateBooking(Long id, UpdateBookingDTO updateBookingDTO) {
-        return bookingRepository.findById(id)
+        return bookingRepository.findByIdWithAddons(id)
                 .map(existingBooking -> {
                     bookingMapper.updateEntityFromDTO(updateBookingDTO, existingBooking);
                     Booking savedBooking = bookingRepository.save(existingBooking);

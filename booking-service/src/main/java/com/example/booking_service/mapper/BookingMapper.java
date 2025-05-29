@@ -101,6 +101,9 @@ public class BookingMapper {
             booking.setNotes(updateBookingDTO.getNotes());
         }
 
+        // debug logging
+        //     System.out.println("UpdateDTO addons: " + updateBookingDTO.getAddons());
+            
         // Handle addons update with validation
         if (updateBookingDTO.getAddons() != null) {
             addOnsValidator.validateAddOnsUpdate(updateBookingDTO.getAddons());
