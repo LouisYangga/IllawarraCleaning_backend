@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.booking_service.dto.BookingDTO;
 import com.example.booking_service.dto.CreateBookingDTO;
+import com.example.booking_service.dto.QuotationResponse;
 import com.example.booking_service.dto.UpdateBookingDTO;
 import com.example.booking_service.dto.UserCreationEventDTO;
 import com.example.booking_service.entity.Booking;
@@ -23,8 +24,10 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final UserEventPublisher userEventPublisher;
+    private final QuotationService quotationService;
     public BookingService(BookingRepository bookingRepository, BookingMapper bookingMapper,
-    UserEventPublisher userEventPublisher) {
+    UserEventPublisher userEventPublisher, QuotationService quotationService) {
+        this.quotationService = quotationService;
         this.userEventPublisher = userEventPublisher;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
@@ -42,6 +45,16 @@ public class BookingService {
 
         Booking booking = bookingMapper.toEntity(createBookingDTO);
         booking.setStatus(BookingStatus.PENDING); // Set initial status
+
+        // If a quotation ID is provided, fetch the quotation details
+        if (createBookingDTO.getQuotationId() != null) {
+            QuotationResponse quotation = quotationService.getQuotation(createBookingDTO.getQuotationId());
+            booking.setPrice(quotation.getPrice());
+            booking.setServiceType(quotation.getServiceType());
+            booking.setDuration(quotation.getDuration());
+            booking.setAddons(quotation.getAddons());
+        }
+        
         Booking savedBooking = bookingRepository.save(booking);
 
         //Publish user creation event to notify user services

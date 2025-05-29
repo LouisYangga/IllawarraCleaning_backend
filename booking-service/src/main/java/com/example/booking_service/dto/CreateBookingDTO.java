@@ -31,11 +31,11 @@ public class CreateBookingDTO {
     
     @NotNull(message = "Service date is required")
     private LocalDateTime scheduledAt;
-    
     private ServiceType serviceType;
     private double duration;
     private double price;
     private String notes;
+    private String quotationId;
     @NotNull(message = "Address is required")
     @Embedded
     private Address address;
