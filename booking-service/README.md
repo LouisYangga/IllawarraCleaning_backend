@@ -1,65 +1,74 @@
 # Booking Service
 
 ## Overview
-The Booking Service is a microservice component of the Illawarra Cleaning Project, responsible for managing cleaning service bookings. It handles booking creation, updates, and management while communicating with the User Service through RabbitMQ for user-related operations.
+The Booking Service is a microservice component of the Illawarra Cleaning Project, responsible for managing cleaning service bookings and quotations. It handles the entire booking lifecycle, from initial quotation to booking completion, while communicating with other services.
 
 ## Features
-- Create new cleaning service bookings
-- Retrieve booking details
-- Update booking information
-- Delete bookings
-- Manage booking statuses
-- Integration with User Service via RabbitMQ
+- **Quotation Management**
+  - Get price quotes for cleaning services
+  - Cache quotations for 30 minutes
+  - Convert quotations to bookings
+- **Booking Management**
+  - Create new cleaning service bookings
+  - Retrieve and search bookings
+  - Update booking information
+  - Manage booking statuses
+- **Integration Features**
+  - Price calculation via Price Service
+  - User management via RabbitMQ
+  - Cached quotation system
 
 ## Technologies
 - Java 17
-- Spring Boot 3.x
+- Spring Boot 3.2.5
+- Spring Cloud OpenFeign
 - Spring Data JPA
 - PostgreSQL
 - RabbitMQ
+- Caffeine Cache
 - Docker
 - Maven
 
 ## Prerequisites
 - Docker and Docker Compose
 - Java 17 or higher
-- Maven
+- Maven 3.x
 - PostgreSQL
 - RabbitMQ
 
-## Configuration
-The service can be configured through the following files:
-- `src/main/resources/application.properties` - Main application configuration
-- `.env` - Environment variables
-- `docker-compose.dev.yml` - Docker development configuration
-
 ## API Endpoints
 
-### Booking Management
+### Quotation Endpoints
 ```
-POST   /api/bookings           - Create a new booking
-GET    /api/bookings           - Get all bookings
-GET    /api/bookings/{id}      - Get booking by ID
+POST   /api/quotations         - Create a new quotation
+GET    /api/quotations/{id}    - Get quotation by ID
+```
+
+### Booking Endpoints
+```
+POST   /api/bookings          - Create a new booking
+GET    /api/bookings          - Get all bookings
+GET    /api/bookings/{id}     - Get booking by ID
 GET    /api/bookings/user/{email} - Get bookings by user email
-PUT    /api/bookings/{id}      - Update a booking
-DELETE /api/bookings/{id}      - Delete a booking
-PUT    /api/bookings/{id}/status - Update booking status
+GET    /api/bookings/status/{status} - Get bookings by status
+GET    /api/bookings/date-range - Get bookings within date range
+PUT    /api/bookings/{id}     - Update a booking
+PATCH  /api/bookings/{id}/status - Update booking status
+DELETE /api/bookings/{id}     - Delete a booking
 ```
 
-## Running the Service
+## Sample Requests
 
-### Development Environment
-1. Start the service using Docker Compose:
-```bash
-docker-compose -f docker-compose.dev.yml up
+### Create Quotation
+```json
+{
+  "serviceType": "REGULAR_CLEANING",
+  "duration": 2.5,
+  "addons": ["WINDOW_CLEANING", "CARPET_CLEANING"]
+}
 ```
 
-2. The service will be available at:
-```
-http://localhost:8082
-```
-
-### Sample Booking Request
+### Create Booking with Quotation
 ```json
 {
   "userEmail": "test@example.com",
@@ -67,9 +76,7 @@ http://localhost:8082
   "lastName": "Doe",
   "phoneNumber": 61412345678,
   "scheduledAt": "2025-05-22T10:00:00",
-  "serviceType": "REGULAR_CLEANING",
-  "duration": 2.5,
-  "price": 150.00,
+  "quotationId": "uuid-from-quotation",
   "notes": "Please bring eco-friendly cleaning products",
   "address": {
     "street": "123 Main Street",
@@ -81,17 +88,33 @@ http://localhost:8082
 }
 ```
 
-## Integration with User Service
-The Booking Service communicates with the User Service through RabbitMQ:
-- Creates/updates user information when bookings are made
-- Sends user creation events via RabbitMQ
-- Maintains consistency between booking and user data
+## Configuration
+Configuration is managed through:
+- `application.properties` - Main application settings
+- `.env` - Environment variables
+- `docker-compose.yml` - Container configuration
+
+### Key Properties
+```properties
+# Application
+spring.application.name=booking-service
+server.port=8082
+
+# Database
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+
+# RabbitMQ
+spring.rabbitmq.host=${SPRING_RABBITMQ_HOST}
+spring.rabbitmq.port=${SPRING_RABBITMQ_PORT}
+```
 
 ## Development
 
 ### Building the Service
 ```bash
-mvn clean install
+mvn clean package
 ```
 
 ### Running Tests
@@ -104,20 +127,35 @@ mvn test
 docker build -t booking-service -f DockerFile.dev .
 ```
 
-## Troubleshooting
-1. If RabbitMQ connection fails:
-   - Verify RabbitMQ is running
-   - Check connection credentials in .env file
-   - Ensure RabbitMQ ports are accessible
+### Docker Compose
+```bash
+docker-compose up -d
+```
 
-2. If database connection fails:
+## Troubleshooting
+
+### Common Issues
+1. **Quotation Not Found**
+   - Quotations expire after 30 minutes
+   - Verify quotationId is correct
+   - Create a new quotation if expired
+
+2. **RabbitMQ Connection**
+   - Check RabbitMQ is running
+   - Verify credentials in .env
+   - Ensure ports are accessible
+
+3. **Database Connection**
    - Verify PostgreSQL is running
-   - Check database credentials in .env file
-   - Ensure database schema exists
+   - Check database credentials
+   - Ensure schema exists
 
 ## Contributing
 1. Fork the repository
 2. Create your feature branch
 3. Commit your changes
 4. Push to the branch
-5. Create a new Pull Request
+5. Create a Pull Request
+
+## License
+This project is licensed under the MIT License.
