@@ -34,4 +34,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT DISTINCT b FROM Booking b LEFT JOIN FETCH b.addons WHERE b.userEmail = :email")
     List<Booking> findByUserEmailWithAddons(@Param("email") String email);
+
+    @Query("SELECT DISTINCT b FROM Booking b LEFT JOIN FETCH b.addons WHERE b.reference = :reference")
+    Optional<Booking> findByReferenceWithAddons(@Param("reference") String reference);
+    
+    boolean existsByReference(String reference);
 }

@@ -50,7 +50,7 @@ public class BookingController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    
     @GetMapping("/user/{email}")
     public ResponseEntity<?> getBookingsByEmail(
             @PathVariable @jakarta.validation.constraints.Email String email) {
@@ -122,5 +122,12 @@ public class BookingController {
             deletedBooking.getScheduledAt()
         );
         return ResponseEntity.ok(java.util.Collections.singletonMap("message", message));
+    }
+
+    @GetMapping("/reference/{reference}")
+    public ResponseEntity<?> getBookingByReference(@PathVariable String reference) {
+        return bookingService.getBookingByReference(reference)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -19,7 +19,6 @@ public class ApiKeyInterceptor implements HandlerInterceptor {
         System.out.println("Checking API key for request: " + request.getRequestURI());
         String providedApiKey = request.getHeader("X-API-Key");
         String expectedApiKey = environment.getProperty("API_KEY");
-        
         if (providedApiKey == null || expectedApiKey == null || !providedApiKey.equals(expectedApiKey)) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Invalid or missing API key");

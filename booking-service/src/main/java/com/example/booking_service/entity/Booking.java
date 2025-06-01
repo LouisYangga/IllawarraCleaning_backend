@@ -2,6 +2,7 @@ package com.example.booking_service.entity;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import jakarta.persistence.CollectionTable;
@@ -32,6 +33,9 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_sequence")
     @SequenceGenerator(name = "booking_sequence", sequenceName = "booking_seq", initialValue = 10000)
     private Long id;
+
+    @Column(unique = true, nullable = false, length = 10)
+    private String reference;
 
     @NotNull(message = "Email is required")
     private String userEmail;
@@ -66,6 +70,11 @@ public class Booking {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        if (reference == null) {
+            // Generate 6-digit random number
+            int randomNumber = new Random().nextInt(900000) + 100000;
+            reference = String.format("ILC%d", randomNumber);
+        }
     }
 
     @PreUpdate

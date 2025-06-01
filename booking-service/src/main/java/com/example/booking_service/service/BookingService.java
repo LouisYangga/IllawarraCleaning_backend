@@ -94,6 +94,11 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
     
+     public Optional<?> getBookingByReference(String reference) {
+        return bookingRepository.findByReferenceWithAddons(reference)
+                .map(bookingMapper::toDTO);
+    }
+
     public List<BookingDTO> getBookingsByDateRange(LocalDateTime start, LocalDateTime end) {
         return bookingRepository.findByScheduledAtBetweenWithAddons(start, end).stream()
                 .map(bookingMapper::toDTO)
