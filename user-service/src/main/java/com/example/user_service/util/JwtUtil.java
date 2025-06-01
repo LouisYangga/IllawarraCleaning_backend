@@ -21,6 +21,9 @@ public class JwtUtil {
     private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // 24 hours
 
     private SecretKey getSigningKey() {
+        if (secret == null || secret.length() < 32) {
+            throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
+        }
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
