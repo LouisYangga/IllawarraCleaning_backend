@@ -23,15 +23,17 @@ public class BookingController {
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
-
+    private ResponseEntity<?> bookingsNotFoundResponse() {
+        return ResponseEntity.status(404)
+                .body(java.util.Collections.singletonMap("message", "No booking(s) found"));
+    }
     @PostMapping
     public ResponseEntity<?> createBooking(@Valid @RequestBody CreateBookingDTO createBookingDto) {
         try {
             BookingDTO createdBooking = bookingService.createBooking(createBookingDto);
             return ResponseEntity.ok(createdBooking);
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(409)
-                .body(java.util.Collections.singletonMap("message", e.getMessage()));
+            return bookingsNotFoundResponse();
         }
     }
 
@@ -39,7 +41,7 @@ public class BookingController {
     public ResponseEntity<?> getAllBookings() {
         List<BookingDTO> bookings = bookingService.getAllBookings();
         if (bookings.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return bookingsNotFoundResponse();
         }
         return ResponseEntity.ok(bookings);
     }
@@ -56,7 +58,7 @@ public class BookingController {
             @PathVariable @jakarta.validation.constraints.Email String email) {
         List<BookingDTO> bookings = bookingService.getBookingsByEmail(email);
         if (bookings.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return bookingsNotFoundResponse();
         }
         return ResponseEntity.ok(bookings);
     }
@@ -72,7 +74,7 @@ public class BookingController {
         }
         List<BookingDTO> bookings = bookingService.getBookingsByStatus(bookingStatus);
         if (bookings.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return bookingsNotFoundResponse();
         }
         return ResponseEntity.ok(bookings);
     }
@@ -83,7 +85,7 @@ public class BookingController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
         List<BookingDTO> bookings = bookingService.getBookingsByDateRange(start, end);
         if (bookings.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return bookingsNotFoundResponse();
         }
         return ResponseEntity.ok(bookings);
     }
@@ -91,8 +93,8 @@ public class BookingController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBooking(@PathVariable Long id, @Valid @RequestBody UpdateBookingDTO updateBookingDto) {
         return bookingService.updateBooking(id, updateBookingDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(bookingsNotFoundResponse());
     }
 
     @PatchMapping("/{id}/status")
@@ -105,8 +107,8 @@ public class BookingController {
                 .body(java.util.Collections.singletonMap("message", "Invalid status value. Allowed values: " + java.util.Arrays.toString(BookingStatus.values())));
         }
         return bookingService.updateBookingStatus(id, bookingStatus)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(bookingsNotFoundResponse());
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
@@ -127,7 +129,7 @@ public class BookingController {
     @GetMapping("/reference/{reference}")
     public ResponseEntity<?> getBookingByReference(@PathVariable String reference) {
         return bookingService.getBookingByReference(reference)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(bookingsNotFoundResponse());
     }
 }
