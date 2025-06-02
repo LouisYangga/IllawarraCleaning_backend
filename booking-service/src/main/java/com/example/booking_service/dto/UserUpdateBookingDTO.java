@@ -12,9 +12,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @NoArgsConstructor
 public class UserUpdateBookingDTO implements AddonsUpdateAware {
     
-    // Use @JsonInclude to control serialization of null fields
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String userEmail;
 // Make all fields optional
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String firstName;
@@ -31,7 +28,6 @@ public class UserUpdateBookingDTO implements AddonsUpdateAware {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private AddOnsUpdate addons;
 
-    private Double duration; // in hours
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String notes;
     

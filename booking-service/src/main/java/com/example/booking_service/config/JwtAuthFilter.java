@@ -29,6 +29,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        // Skip JWT validation for public endpoints
+        return path.startsWith("/api/bookings/reference/") ||
+               (path.equals("/api/bookings") && request.getMethod().equals("POST")) ||
+               path.startsWith("/api/quotations/");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, 
                                   HttpServletResponse response, 
                                   FilterChain filterChain) throws ServletException, IOException, JwtAuthenticationException {

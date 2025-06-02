@@ -131,14 +131,7 @@ public class BookingService {
         return bookingRepository.findByReferenceWithAddons(reference)
                 .map(existingBooking -> {
                     validateUpdate(existingBooking, updateDTO);
-                    boolean needsPriceUpdate = isPriceUpdateRequired(existingBooking, updateDTO);
-                    
                     bookingMapper.updateEntityFromUserDTO(updateDTO, existingBooking);
-                    
-                    if (needsPriceUpdate) {
-                        updateBookingPricing(existingBooking);
-                    }
-                    
                     Booking savedBooking = bookingRepository.save(existingBooking);
                     return bookingMapper.toPublicBookingDTO(savedBooking);
                 });
@@ -164,16 +157,14 @@ public class BookingService {
     private <T> boolean isPriceUpdateRequired(Booking existingBooking, T updateDTO) {
         if (updateDTO instanceof UpdateBookingDTO) {
             UpdateBookingDTO adminUpdate = (UpdateBookingDTO) updateDTO;
+
             boolean serviceTypeChanged = adminUpdate.getServiceType() != null && 
                 !adminUpdate.getServiceType().equals(existingBooking.getServiceType());
+
             boolean addonsChanged = adminUpdate.getAddons() != null && 
                 !adminUpdate.getAddons().equals(existingBooking.getAddons());
+
             return serviceTypeChanged || addonsChanged;
-        } else if (updateDTO instanceof UserUpdateBookingDTO) {
-            UserUpdateBookingDTO userUpdate = (UserUpdateBookingDTO) updateDTO;
-            boolean addonsChanged = userUpdate.getAddons() != null && 
-                !userUpdate.getAddons().equals(existingBooking.getAddons());
-            return addonsChanged;  // Users can only change addons
         }
         return false;
     }

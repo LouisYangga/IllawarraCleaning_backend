@@ -97,10 +97,6 @@ public class BookingMapper {
         if (updateBookingDTO.getPhoneNumber() != null) booking.setPhoneNumber(updateBookingDTO.getPhoneNumber());
         if (updateBookingDTO.getNotes() != null) booking.setNotes(updateBookingDTO.getNotes());
         if (updateBookingDTO.getAddress() != null) booking.setAddress(updateBookingDTO.getAddress());
-        if (updateBookingDTO.getDuration()!=null && updateBookingDTO.getDuration() > 0) {
-            booking.setDuration(updateBookingDTO.getDuration());
-        }
-        handleAddonsUpdate(updateBookingDTO, booking);
     }
     public void updateEntityFromDTO(UpdateBookingDTO updateBookingDTO, Booking booking) {
         if (updateBookingDTO == null || booking == null) {
