@@ -1,24 +1,21 @@
 package com.example.booking_service.dto;
 
-import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import com.example.booking_service.entity.AddOnsUpdate;
 import com.example.booking_service.entity.Address;
-import com.example.booking_service.entity.BookingStatus;
 import com.example.booking_service.entity.ServiceType;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class UpdateBookingDTO implements AddonsUpdateAware {
-    private Long id;
+public class UserUpdateBookingDTO implements AddonsUpdateAware {
     
-    // Make all fields optional
+    // Use @JsonInclude to control serialization of null fields
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String userEmail;
+// Make all fields optional
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String firstName;
     
@@ -29,24 +26,12 @@ public class UpdateBookingDTO implements AddonsUpdateAware {
     private Long phoneNumber;
     
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LocalDateTime scheduledAt;
-    
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ServiceType serviceType;
-    
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private BookingStatus status;
-    
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Double duration;
-    
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Double price;
-    
     // For addons, use a special wrapper class to handle partial updates
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private AddOnsUpdate addons;
-    
+
+    private Double duration; // in hours
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String notes;
     

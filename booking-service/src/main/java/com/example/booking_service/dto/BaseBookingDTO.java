@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDTO {
-    private Long id;
+public class BaseBookingDTO {
+    private String reference;
     private String userEmail;
     private String firstName;
     private String lastName;
@@ -29,7 +29,5 @@ public class BookingDTO {
     private double price;
     private String notes;
     private Address address;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private Set<AddOns> addons = new HashSet<>();
 }

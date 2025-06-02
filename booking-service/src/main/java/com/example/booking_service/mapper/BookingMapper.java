@@ -4,9 +4,13 @@ import java.util.HashSet;
 
 import org.springframework.stereotype.Component;
 
-import com.example.booking_service.dto.BookingDTO;
+import com.example.booking_service.dto.AddonsUpdateAware;
+import com.example.booking_service.dto.AdminBookingDTO;
 import com.example.booking_service.dto.CreateBookingDTO;
+import com.example.booking_service.dto.PublicBookingDTO;
 import com.example.booking_service.dto.UpdateBookingDTO;
+import com.example.booking_service.dto.UserUpdateBookingDTO;
+import com.example.booking_service.entity.AddOnsUpdate;
 import com.example.booking_service.entity.Booking;
 import com.example.booking_service.validator.AddOnsValidator;
 
@@ -18,13 +22,14 @@ public class BookingMapper {
         this.addOnsValidator = addOnsValidator;
     }
 
-    public BookingDTO toDTO(Booking booking) {
+    public AdminBookingDTO toAdminDTO(Booking booking) {
         if (booking == null) {
             return null;
         }
         
-        BookingDTO bookingDTO = new BookingDTO();
+        AdminBookingDTO bookingDTO = new AdminBookingDTO();
         bookingDTO.setId(booking.getId());
+        bookingDTO.setReference(booking.getReference());
         bookingDTO.setUserEmail(booking.getUserEmail());
         bookingDTO.setFirstName(booking.getFirstName());
         bookingDTO.setLastName(booking.getLastName());
@@ -41,7 +46,29 @@ public class BookingMapper {
         bookingDTO.setAddons(booking.getAddons());
         return bookingDTO;
     }
-    
+      public PublicBookingDTO toPublicBookingDTO (Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+        
+        PublicBookingDTO bookingDTO = new PublicBookingDTO();
+        bookingDTO.setReference(booking.getReference());
+        bookingDTO.setUserEmail(booking.getUserEmail());
+        bookingDTO.setFirstName(booking.getFirstName());
+        bookingDTO.setLastName(booking.getLastName());
+        bookingDTO.setPhoneNumber(booking.getPhoneNumber());
+        bookingDTO.setScheduledAt(booking.getScheduledAt());
+        bookingDTO.setServiceType(booking.getServiceType());
+        bookingDTO.setStatus(booking.getStatus());
+        bookingDTO.setDuration(booking.getDuration());
+        bookingDTO.setPrice(booking.getPrice());
+        bookingDTO.setNotes(booking.getNotes());
+        bookingDTO.setAddress(booking.getAddress());
+        bookingDTO.setCreatedAt(booking.getCreatedAt());
+        bookingDTO.setUpdatedAt(booking.getUpdatedAt());
+        bookingDTO.setAddons(booking.getAddons());
+        return bookingDTO;
+    }
     public Booking toEntity(CreateBookingDTO createBookingDTO) {
         if (createBookingDTO == null) {
             return null;
@@ -64,7 +91,17 @@ public class BookingMapper {
         
         return booking;
     }
-    
+    public void updateEntityFromUserDTO(UserUpdateBookingDTO updateBookingDTO, Booking booking){
+        if (updateBookingDTO.getFirstName() != null) booking.setFirstName(updateBookingDTO.getFirstName());
+        if (updateBookingDTO.getLastName() != null) booking.setLastName(updateBookingDTO.getLastName());
+        if (updateBookingDTO.getPhoneNumber() != null) booking.setPhoneNumber(updateBookingDTO.getPhoneNumber());
+        if (updateBookingDTO.getNotes() != null) booking.setNotes(updateBookingDTO.getNotes());
+        if (updateBookingDTO.getAddress() != null) booking.setAddress(updateBookingDTO.getAddress());
+        if (updateBookingDTO.getDuration()!=null && updateBookingDTO.getDuration() > 0) {
+            booking.setDuration(updateBookingDTO.getDuration());
+        }
+        handleAddonsUpdate(updateBookingDTO, booking);
+    }
     public void updateEntityFromDTO(UpdateBookingDTO updateBookingDTO, Booking booking) {
         if (updateBookingDTO == null || booking == null) {
             return;
@@ -100,29 +137,28 @@ public class BookingMapper {
         if (updateBookingDTO.getNotes() != null) {
             booking.setNotes(updateBookingDTO.getNotes());
         }
-
-        // debug logging
-        //     System.out.println("UpdateDTO addons: " + updateBookingDTO.getAddons());
-            
-        // Handle addons update with validation
-        if (updateBookingDTO.getAddons() != null) {
-            addOnsValidator.validateAddOnsUpdate(updateBookingDTO.getAddons());
-            
-            if (updateBookingDTO.getAddons().getReplace() != null) {
-                booking.setAddons(new HashSet<>(updateBookingDTO.getAddons().getReplace()));
-            } else {
-                if (booking.getAddons() == null) {
-                    booking.setAddons(new HashSet<>());
-                }
+        handleAddonsUpdate(updateBookingDTO, booking);
+    }
+    private <T extends AddonsUpdateAware> void handleAddonsUpdate(T dto, Booking booking) {
+            AddOnsUpdate addonsUpdate = dto.getAddons();
+            if (addonsUpdate != null) {
+                addOnsValidator.validateAddOnsUpdate(addonsUpdate);
                 
-                if (updateBookingDTO.getAddons().getAdd() != null) {
-                    booking.getAddons().addAll(updateBookingDTO.getAddons().getAdd());
-                }
-                
-                if (updateBookingDTO.getAddons().getRemove() != null) {
-                    booking.getAddons().removeAll(updateBookingDTO.getAddons().getRemove());
+                if (addonsUpdate.getReplace() != null) {
+                    booking.setAddons(new HashSet<>(addonsUpdate.getReplace()));
+                } else {
+                    if (booking.getAddons() == null) {
+                        booking.setAddons(new HashSet<>());
+                    }
+                    
+                    if (addonsUpdate.getAdd() != null) {
+                        booking.getAddons().addAll(addonsUpdate.getAdd());
+                    }
+                    
+                    if (addonsUpdate.getRemove() != null) {
+                        booking.getAddons().removeAll(addonsUpdate.getRemove());
+                    }
                 }
             }
         }
-    }
 }

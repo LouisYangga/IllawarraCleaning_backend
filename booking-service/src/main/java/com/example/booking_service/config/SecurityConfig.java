@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/quotations/**").permitAll()
                 
                 // Admin only endpoints
-                .requestMatchers("/api/bookings/all").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/api/bookings").hasRole("ADMIN")
                 .requestMatchers("/api/bookings/status/**").hasRole("ADMIN")
                 .requestMatchers("/api/bookings/date-range").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/bookings/**").hasRole("ADMIN")

@@ -20,11 +20,7 @@ public class QuotationService {
 
     public QuotationResponse createQuotation(QuotationRequest request) {
         // Calculate price using the price service
-        double price = priceFeignClient.calculatePrice(
-            request.getServiceType(), 
-            request.getAddons(), 
-            request.getDuration()
-        );
+        double price = calculatePrice(request);
 
         // Create and cache the quotation
         String quotationId = UUID.randomUUID().toString();
@@ -47,7 +43,16 @@ public class QuotationService {
         }
         return response;
     }
-
+    /**
+     * Calculates the price for a given quotation request.
+     */
+    public double calculatePrice(QuotationRequest request) {
+        return priceFeignClient.calculatePrice(
+            request.getServiceType(),
+            request.getAddons(),
+            request.getDuration()
+        );
+    }
     /**
      * Returns cache statistics for monitoring
      */
