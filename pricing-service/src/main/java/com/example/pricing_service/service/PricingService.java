@@ -123,7 +123,7 @@ public class PricingService {
     public AddonPriceDTO updateAddonPrice(AddOns addon, AddonPriceDTO addonPriceDTO) {
         AddonPrice entity = addonPriceRepository.findByAddon(addon)
                 .orElseThrow(() -> new IllegalArgumentException("Addon price not found: " + addon));
-        addonPriceMapper.updateEntityFromDTO(entity, addonPriceDTO);
+        addonPriceMapper.updateEntityFromDTO(addonPriceDTO, entity);
         return addonPriceMapper.toDTO(addonPriceRepository.save(entity));
     }
 
