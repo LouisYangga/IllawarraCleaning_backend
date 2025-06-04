@@ -1,2 +1,32 @@
-.env
+# Project-wide gitignore
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Binary and IDE folders ###
+**/bin/
+.idea/
+*.iws
+*.iml
+*.ipr
 .vscode/
+.settings/
+.project
+.classpath
+.factorypath
+.springBeans
+.sts4-cache
+
+### Environment ###
+.env
+**/application-local.properties
+
+### Build folders ###
+/build/
+/dist/
+/out/
+
+### Misc ###
+HELP.md
+.DS_Store
