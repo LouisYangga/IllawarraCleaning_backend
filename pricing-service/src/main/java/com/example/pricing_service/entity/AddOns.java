@@ -2,12 +2,16 @@ package com.example.pricing_service.entity;
 
 public enum AddOns {
     WINDOW_CLEANING("Window Cleaning"),
-    CARPET_CLEANING("Carpet Cleaning"),
-    UPHOLSTERY_CLEANING("Upholstery Cleaning"),
-    BATHROOM_DEEP_CLEAN("Bathroom Deep Clean"),
-    KITCHEN_DEEP_CLEAN("Kitchen Deep Clean"),
     FRIDGE_CLEANING("Fridge Cleaning"),
-    OVEN_CLEANING("Oven Cleaning");
+    OVEN_CLEANING("Oven Cleaning"),
+    CARPET_CLEANING("Carpet Cleaning"),
+    WALLS_CLEANING("Walls Cleaning"),
+    GARAGE_CLEANING("Garage Cleaning"),
+    BALCONY_CLEANING("Balcony Cleaning"),
+    BEDROOM_CLEANING("Bedroom Cleaning"),
+    BATHROOM_CLEANING("Bathroom Cleaning"),
+    KITCHEN_CLEANING("Kitchen Cleaning"),
+    BLIND_CLEANING("Blind Cleaning");
 
     private final String displayName;
 
