@@ -50,7 +50,30 @@ services:
       networks:
         - illawarra-network
       restart: unless-stopped  
-
+      pricing-service:
+          build:
+            context: ./pricing-service
+            dockerfile: DockerFile.dev
+          ports:
+            - "8084:8084"
+          volumes:
+            - ./pricing-service:/app
+            - ./pricing-service/pom.xml:/app/pom.xml
+            - ./pricing-service/mvnw:/app/mvnw
+            - /c/Users/COMPUTER/.m2:/root/.m2
+          env_file:
+            - ./pricing-service/.env
+          environment:
+            SPRING_PROFILES_ACTIVE: dev
+            SPRING_RABBITMQ_HOST: rabbitmq
+            JAVA_TOOL_OPTIONS: >-
+              -Dspring.devtools.restart.enabled=true
+              -Dspring-boot.run.fork=false
+          depends_on:
+            - rabbitmq
+          networks:
+            - illawarra-network
+          restart: unless-stopped
   rabbitmq:
       image: rabbitmq:3-management
       ports:

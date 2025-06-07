@@ -1,38 +1,48 @@
 package com.example.booking_service.service;
 
-import com.example.booking_service.client.PriceFeignClient;
 import com.example.booking_service.dto.QuotationRequest;
 import com.example.booking_service.dto.QuotationResponse;
+import com.example.booking_service.dto.QuotationEvent;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class QuotationService {
     private final Cache<String, QuotationResponse> cache;
-    private final PriceFeignClient priceFeignClient;
+    private final QuotationEventPublisher eventPublisher;
 
-    public QuotationService(Caffeine<Object, Object> caffeine, PriceFeignClient priceFeignClient) {
+    public QuotationService(Caffeine<Object, Object> caffeine, QuotationEventPublisher eventPublisher) {
         this.cache = caffeine.recordStats().build();
-        this.priceFeignClient = priceFeignClient;
+        this.eventPublisher = eventPublisher;
     }
 
     public QuotationResponse createQuotation(QuotationRequest request) {
-        // Calculate price using the price service
-        double price = calculatePrice(request);
-
-        // Create and cache the quotation
         String quotationId = UUID.randomUUID().toString();
+        
+        QuotationEvent event = new QuotationEvent(
+            quotationId,
+            request.getServiceType(),
+            request.getAddons(),
+            request.getDuration(),
+            "PENDING"
+        );
+
+        QuotationResponse reply = eventPublisher.publishQuotationEvent(event);
+        
         QuotationResponse response = new QuotationResponse(
             quotationId,
-            price,
+            reply.getPrice(),
             request.getServiceType(),
             request.getDuration(),
             request.getAddons()
         );
         
         cache.put(quotationId, response);
+        log.info("Received price calculation for quotation {}: ${}", quotationId, reply.getPrice());
         return response;
     }
 
@@ -42,16 +52,6 @@ public class QuotationService {
             throw new IllegalArgumentException("Quotation not found or has expired: " + quotationId);
         }
         return response;
-    }
-    /**
-     * Calculates the price for a given quotation request.
-     */
-    public double calculatePrice(QuotationRequest request) {
-        return priceFeignClient.calculatePrice(
-            request.getServiceType(),
-            request.getAddons(),
-            request.getDuration()
-        );
     }
     /**
      * Returns cache statistics for monitoring

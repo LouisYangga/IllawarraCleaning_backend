@@ -12,7 +12,7 @@ public class UserEventPublisher {
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
     
-    @Value("${rabbitmq.routing.key}")
+    @Value("${rabbitmq.routing.user.key}")
     private String routingKey;
 
     public UserEventPublisher(RabbitTemplate rabbitTemplate) {

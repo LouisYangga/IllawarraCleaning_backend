@@ -25,7 +25,7 @@ public class QuotationController {
 
     // Retrieve a quotation by its ID (for booking creation)
     @GetMapping("/{quotationId}")
-    public ResponseEntity<?> getQuotation(@PathVariable String quotationId) {
+    public ResponseEntity<?> getQuotationFromCache(@PathVariable String quotationId) {
         QuotationResponse response = quotationService.getQuotation(quotationId);
         if (response == null) {
             return ResponseEntity
