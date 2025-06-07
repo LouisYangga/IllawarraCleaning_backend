@@ -16,7 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiKeyInterceptor)
-               .addPathPatterns("/api/prices/**")          // Apply to all price endpoints
+               .addPathPatterns("/api/**")          // Apply to all price endpoints
                .excludePathPatterns("/api/prices/calculate"); // Exclude price calculation endpoint
     }
 }

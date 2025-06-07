@@ -23,10 +23,13 @@ public class QuotationService {
     public QuotationResponse createQuotation(QuotationRequest request) {
         String quotationId = UUID.randomUUID().toString();
         
+        // If addons is null or empty, set it to null so it won't be calculated
+        var addons = (request.getAddons() == null || request.getAddons().isEmpty()) ? null : request.getAddons();
+        
         QuotationEvent event = new QuotationEvent(
             quotationId,
             request.getServiceType(),
-            request.getAddons(),
+            addons,
             request.getDuration(),
             "PENDING"
         );

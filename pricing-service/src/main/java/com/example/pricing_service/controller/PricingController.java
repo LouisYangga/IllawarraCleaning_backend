@@ -43,13 +43,13 @@ public class PricingController {
     }
 
     @PostMapping("/services")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ServicePriceDTO> createServicePrice(@Valid @RequestBody ServicePriceDTO servicePriceDTO) {
         return ResponseEntity.ok(pricingService.createServicePrice(servicePriceDTO));
     }
 
     @PutMapping("/services/{serviceType}")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ServicePriceDTO> updateServicePrice(
             @PathVariable ServiceType serviceType,
             @Valid @RequestBody ServicePriceDTO servicePriceDTO) {
@@ -57,7 +57,7 @@ public class PricingController {
     }
 
     @DeleteMapping("/services/{serviceType}")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteServicePrice(@PathVariable ServiceType serviceType) {
         pricingService.deleteServicePrice(serviceType);
         return ResponseEntity.noContent().build();
@@ -75,13 +75,13 @@ public class PricingController {
     }
 
     @PostMapping("/addons")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AddonPriceDTO> createAddonPrice(@Valid @RequestBody AddonPriceDTO addonPriceDTO) {
         return ResponseEntity.ok(pricingService.createAddonPrice(addonPriceDTO));
     }
 
     @PutMapping("/addons/{addon}")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AddonPriceDTO> updateAddonPrice(
             @PathVariable AddOns addon,
             @Valid @RequestBody AddonPriceDTO addonPriceDTO) {
@@ -89,7 +89,7 @@ public class PricingController {
     }
 
     @DeleteMapping("/addons/{addon}")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAddonPrice(@PathVariable AddOns addon) {
         pricingService.deleteAddonPrice(addon);
         return ResponseEntity.noContent().build();
