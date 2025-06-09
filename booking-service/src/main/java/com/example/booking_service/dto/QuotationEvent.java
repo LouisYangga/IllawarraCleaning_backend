@@ -15,5 +15,6 @@ public class QuotationEvent {
     private ServiceType serviceType;
     private Set<AddOns> addons;
     private double duration;
+    private Double price;
     private String status;
 }

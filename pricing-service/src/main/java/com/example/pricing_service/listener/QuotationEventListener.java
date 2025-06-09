@@ -37,7 +37,7 @@ public class QuotationEventListener {
             
             log.info("Completed price calculation for quotation {}: ${}", 
                     event.getQuotationId(), calculatedPrice);
-            
+            log.info("returning quotationevent");
             return event;
             
         } catch (Exception e) {

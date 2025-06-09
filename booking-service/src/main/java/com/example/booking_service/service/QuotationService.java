@@ -31,6 +31,7 @@ public class QuotationService {
             request.getServiceType(),
             addons,
             request.getDuration(),
+            0.0,
             "PENDING"
         );
 

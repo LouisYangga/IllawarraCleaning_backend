@@ -26,18 +26,23 @@ public class QuotationEventPublisher {
     public QuotationResponse publishQuotationEvent(QuotationEvent event) {
         log.info("Publishing quotation calculation request for ID: {}", event.getQuotationId());
         
-        QuotationResponse reply = (QuotationResponse) rabbitTemplate.convertSendAndReceive(
+        QuotationEvent reply = (QuotationEvent) rabbitTemplate.convertSendAndReceive(
             exchangeName,
             quotationRoutingKey,
             event
         );
-
         if (reply == null) {
             log.error("Failed to get price calculation: No response from pricing service");
             throw new RuntimeException("Failed to calculate price");
         }
-
+        QuotationResponse response = new QuotationResponse();
+        response.setQuotationId(reply.getQuotationId());
+        response.setPrice(reply.getPrice());
+        response.setServiceType(reply.getServiceType());
+        response.setDuration(reply.getDuration());
+        response.setAddons(reply.getAddons());
+        
         log.info("Received price calculation for quotation {}: ${}", event.getQuotationId(), reply.getPrice());
-        return reply;
+        return response;
     }
 }
