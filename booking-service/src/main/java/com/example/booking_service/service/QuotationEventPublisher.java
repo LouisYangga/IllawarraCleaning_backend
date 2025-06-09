@@ -25,23 +25,32 @@ public class QuotationEventPublisher {
 
     public QuotationResponse publishQuotationEvent(QuotationEvent event) {
         log.info("Publishing quotation calculation request for ID: {}", event.getQuotationId());
-        
-        QuotationEvent reply = (QuotationEvent) rabbitTemplate.convertSendAndReceive(
+
+        String replyJson = (String) rabbitTemplate.convertSendAndReceive(
             exchangeName,
             quotationRoutingKey,
             event
         );
-        if (reply == null) {
+        if (replyJson == null) {
             log.error("Failed to get price calculation: No response from pricing service");
             throw new RuntimeException("Failed to calculate price");
         }
+
+        QuotationEvent reply;
+        try {
+            reply = new com.fasterxml.jackson.databind.ObjectMapper().readValue(replyJson, QuotationEvent.class);
+        } catch (Exception e) {
+            log.error("Failed to parse reply JSON: {}", e.getMessage());
+            throw new RuntimeException("Failed to parse reply JSON", e);
+        }
+
         QuotationResponse response = new QuotationResponse();
         response.setQuotationId(reply.getQuotationId());
         response.setPrice(reply.getPrice());
         response.setServiceType(reply.getServiceType());
         response.setDuration(reply.getDuration());
         response.setAddons(reply.getAddons());
-        
+
         log.info("Received price calculation for quotation {}: ${}", event.getQuotationId(), reply.getPrice());
         return response;
     }
