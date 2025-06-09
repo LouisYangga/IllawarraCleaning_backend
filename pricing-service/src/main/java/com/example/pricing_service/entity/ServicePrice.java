@@ -29,11 +29,11 @@ public class ServicePrice {
 
     @NotNull
     @Positive
-    private double basePrice;
+    private Double basePrice;
 
     @NotNull
     @Positive
-    private double hourlyRate;
+    private Double hourlyRate;
 
     @Column(length = 500)
     private String description;

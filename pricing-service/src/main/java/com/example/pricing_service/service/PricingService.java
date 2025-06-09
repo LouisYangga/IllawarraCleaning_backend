@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.pricing_service.dto.ServicePriceDTO;
+import com.example.pricing_service.dto.ServicePriceUpdateDTO;
 import com.example.pricing_service.dto.AddonPriceDTO;
+import com.example.pricing_service.dto.AddonPriceUpdateDTO;
 import com.example.pricing_service.dto.PriceCalculationRequest;
 import com.example.pricing_service.entity.ServicePrice;
 import com.example.pricing_service.entity.AddonPrice;
@@ -82,10 +84,10 @@ public class PricingService {
     }
 
     @Transactional
-    public ServicePriceDTO updateServicePrice(ServiceType serviceType, ServicePriceDTO servicePriceDTO) {
+    public ServicePriceDTO updateServicePrice(ServiceType serviceType, ServicePriceUpdateDTO servicePriceUpdateDTO) {
         ServicePrice entity = servicePriceRepository.findByServiceType(serviceType)
                 .orElseThrow(() -> new IllegalArgumentException("Service price not found: " + serviceType));
-        servicePriceMapper.updateEntityFromDTO(servicePriceDTO, entity);
+        servicePriceMapper.updateEntityFromDTO(servicePriceUpdateDTO, entity);
         return servicePriceMapper.toDTO(servicePriceRepository.save(entity));
     }
 
@@ -120,10 +122,10 @@ public class PricingService {
     }
 
     @Transactional
-    public AddonPriceDTO updateAddonPrice(AddOns addon, AddonPriceDTO addonPriceDTO) {
+    public AddonPriceDTO updateAddonPrice(AddOns addon, AddonPriceUpdateDTO addonPriceUpdateDTO) {
         AddonPrice entity = addonPriceRepository.findByAddon(addon)
                 .orElseThrow(() -> new IllegalArgumentException("Addon price not found: " + addon));
-        addonPriceMapper.updateEntityFromDTO(addonPriceDTO, entity);
+        addonPriceMapper.updateEntityFromDTO(addonPriceUpdateDTO, entity);
         return addonPriceMapper.toDTO(addonPriceRepository.save(entity));
     }
 

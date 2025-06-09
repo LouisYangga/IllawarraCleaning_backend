@@ -28,22 +28,15 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> 
-            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-            // Public GET endpoints
-            .requestMatchers("/api/prices/calculate").permitAll()
-            .requestMatchers("/api/prices/services").permitAll()
-            .requestMatchers("/api/prices/addons").permitAll()
-            // Protect update, delete, and insert for services and addons
-            .requestMatchers(HttpMethod.PUT, "/api/prices/services/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/prices/services/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/api/prices/services/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PUT, "/api/prices/addons/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/prices/addons/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/api/prices/addons/**").hasRole("ADMIN")
-            // Protect all other price-related endpoints
-            .requestMatchers("/api/prices/**").hasRole("ADMIN")
-            .anyRequest().authenticated()
+                // Public endpoints - no authentication required
+                .requestMatchers(HttpMethod.GET, "/api/prices/services", "/api/prices/services/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/prices/addons", "/api/prices/addons/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/prices/calculate").permitAll()
+                
+                // All other endpoints require authentication
+                .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         
@@ -52,6 +45,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance(); // Since we're not using passwords
+        return NoOpPasswordEncoder.getInstance();
     }
 }

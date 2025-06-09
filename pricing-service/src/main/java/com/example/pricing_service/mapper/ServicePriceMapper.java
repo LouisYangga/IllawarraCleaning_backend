@@ -2,6 +2,7 @@ package com.example.pricing_service.mapper;
 
 import org.springframework.stereotype.Component;
 import com.example.pricing_service.dto.ServicePriceDTO;
+import com.example.pricing_service.dto.ServicePriceUpdateDTO;
 import com.example.pricing_service.entity.ServicePrice;
 
 @Component
@@ -33,18 +34,17 @@ public class ServicePriceMapper {
         return entity;
     }
 
-    public void updateEntityFromDTO(ServicePriceDTO dto, ServicePrice entity) {
+    public void updateEntityFromDTO(ServicePriceUpdateDTO dto, ServicePrice entity) {
         if (dto == null || entity == null) {
             return;
         }
         
         if (dto.getServiceType() != null) {
             entity.setServiceType(dto.getServiceType());
-        }
-        if (dto.getBasePrice() > 0) {
+        }        if (dto.getBasePrice() != null && dto.getBasePrice() > 0) {
             entity.setBasePrice(dto.getBasePrice());
         }
-        if (dto.getHourlyRate() > 0) {
+        if (dto.getHourlyRate() != null && dto.getHourlyRate() > 0) {
             entity.setHourlyRate(dto.getHourlyRate());
         }
         if (dto.getDescription() != null) {

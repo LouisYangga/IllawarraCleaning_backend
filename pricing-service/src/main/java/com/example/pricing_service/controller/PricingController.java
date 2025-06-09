@@ -5,7 +5,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.pricing_service.dto.ServicePriceDTO;
+import com.example.pricing_service.dto.ServicePriceUpdateDTO;
 import com.example.pricing_service.dto.AddonPriceDTO;
+import com.example.pricing_service.dto.AddonPriceUpdateDTO;
 import com.example.pricing_service.dto.PriceCalculationRequest;
 import com.example.pricing_service.entity.ServiceType;
 import com.example.pricing_service.entity.AddOns;
@@ -52,8 +54,8 @@ public class PricingController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ServicePriceDTO> updateServicePrice(
             @PathVariable ServiceType serviceType,
-            @Valid @RequestBody ServicePriceDTO servicePriceDTO) {
-        return ResponseEntity.ok(pricingService.updateServicePrice(serviceType, servicePriceDTO));
+            @RequestBody ServicePriceUpdateDTO servicePriceUpdateDTO) {
+        return ResponseEntity.ok(pricingService.updateServicePrice(serviceType, servicePriceUpdateDTO));
     }
 
     @DeleteMapping("/services/{serviceType}")
@@ -84,8 +86,8 @@ public class PricingController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AddonPriceDTO> updateAddonPrice(
             @PathVariable AddOns addon,
-            @Valid @RequestBody AddonPriceDTO addonPriceDTO) {
-        return ResponseEntity.ok(pricingService.updateAddonPrice(addon, addonPriceDTO));
+            @RequestBody AddonPriceUpdateDTO addonPriceUpdateDTO) {
+        return ResponseEntity.ok(pricingService.updateAddonPrice(addon, addonPriceUpdateDTO));
     }
 
     @DeleteMapping("/addons/{addon}")

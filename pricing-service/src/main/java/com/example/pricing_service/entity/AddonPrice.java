@@ -29,7 +29,7 @@ public class AddonPrice {
 
     @NotNull
     @Positive
-    private double price;
+    private Double price;
 
     @Column(length = 500)
     private String description;

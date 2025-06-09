@@ -2,6 +2,7 @@ package com.example.pricing_service.mapper;
 
 import org.springframework.stereotype.Component;
 import com.example.pricing_service.dto.AddonPriceDTO;
+import com.example.pricing_service.dto.AddonPriceUpdateDTO;
 import com.example.pricing_service.entity.AddonPrice;
 
 @Component
@@ -31,7 +32,7 @@ public class AddonPriceMapper {
         return entity;
     }
 
-    public void updateEntityFromDTO(AddonPriceDTO dto, AddonPrice entity) {
+    public void updateEntityFromDTO(AddonPriceUpdateDTO dto, AddonPrice entity) {
         if (dto == null || entity == null) {
             return;
         }
