@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.booking_service.dto.AddressValidationResult;
 import com.example.booking_service.dto.AdminBookingDTO;
 import com.example.booking_service.dto.CreateBookingDTO;
 import com.example.booking_service.dto.PublicBookingDTO;
@@ -28,19 +29,34 @@ public class BookingService {
     private final BookingMapper bookingMapper;
     private final UserEventPublisher userEventPublisher;
     private final QuotationService quotationService;
+    private final AddressValidationService addressValidationService;
+
     public BookingService(BookingRepository bookingRepository, BookingMapper bookingMapper,
-    UserEventPublisher userEventPublisher, QuotationService quotationService) {
+    UserEventPublisher userEventPublisher, QuotationService quotationService,
+    AddressValidationService addressValidationService) {
         this.quotationService = quotationService;
         this.userEventPublisher = userEventPublisher;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
+        this.addressValidationService = addressValidationService;
     }
     
     // Create
     @Transactional
     public PublicBookingDTO createBooking(CreateBookingDTO createBookingDTO) {
+        // Validate address
+        AddressValidationResult validationResult = 
+            addressValidationService.validateAddress(createBookingDTO.getAddress());
+        
+        if (!validationResult.isValid()) {
+            throw new IllegalArgumentException(validationResult.getMessage());
+        }
+
+        // Use the formatted address from Google
+        createBookingDTO.setAddress(validationResult.getValidatedAddress());
+
         // Check if booking already exists for this user at this time
-        if (bookingRepository.existsByUserEmailAndScheduledAt(
+        if (bookingRepository.existsByUserEmailAndScheduledAt(                                                                                                                                                                                                                                                                                                          
                 createBookingDTO.getUserEmail(), 
                 createBookingDTO.getScheduledAt())) {
             throw new IllegalStateException("Booking already exists for this user at this time");
