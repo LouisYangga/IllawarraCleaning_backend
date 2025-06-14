@@ -95,12 +95,12 @@ The service processes the following events:
 
 | Method | Endpoint | Description | Access |
 |--------|----------|-------------|--------------|
-| GET | `/users` | Get list of all users | USER/ADMIN |
+| GET | `/users` | Get list of all users | ADMIN |
 | GET | `/users/{id}` | Get user by ID | USER/ADMIN |
 | GET | `/users/email/{email}` | Get user by email address | USER/ADMIN |
 | POST | `/users` | Create a new user | USER/ADMIN |
 | PUT | `/users/update` | Update user information | USER/ADMIN |
-| DELETE | `/users/{id}` | Delete user by ID | USER/ADMIN |
+| DELETE | `/users/{id}` | Delete user by ID | ADMIN |
 
 
 ### User Payload Examples
