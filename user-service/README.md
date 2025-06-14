@@ -4,20 +4,24 @@
 The User Service is a microservice component of the Illawarra Cleaning Project that handles user management and works in conjunction with the Booking Service. It manages user profiles, tracks booking counts, and processes user-related events received through RabbitMQ.
 
 ## Features
-- User profile management
-- Track user booking counts
-- Process user creation events from Booking Service
-- Automatic user creation on first booking
-- User profile updates
-- Booking count management
+- User profile management (CRUD operations)
+- JWT-based authentication and authorization
+- API key validation for service-to-service communication
+- Role-based access control (ADMIN/USER)
+- Integration with Booking Service via RabbitMQ
+- Automatic user creation from booking events
+- Booking count tracking per user
+- Email-based user lookup
 
-## Technologies
+## Tech Stack
 - Java 17
-- Spring Boot 3.x
+- Spring Boot 3.2.5
+- Spring Security
 - Spring Data JPA
-- PostgreSQL
-- RabbitMQ (Message Consumer)
-- Docker
+- PostgreSQL (Database)
+- RabbitMQ (Message Queue)
+- JWT (Authentication)
+- Docker & Docker Compose
 - Maven
 
 ## Base URL
@@ -32,28 +36,72 @@ All API endpoints (except specifically excluded ones) require:
 - JWT authentication for protected routes
 
 ## Configuration
-The service can be configured through:
-- `src/main/resources/application.properties` - Main application configuration
-- `.env` - Environment variables
-- `docker-compose.dev.yml` - Docker development configuration
+
+### Environment Variables (.env)
+```properties
+# Database Configuration
+SPRING_DATASOURCE_URL=jdbc:postgresql://your-db-host/user-service
+SPRING_DATASOURCE_USERNAME=your-username
+SPRING_DATASOURCE_PASSWORD=your-password
+
+# RabbitMQ Configuration
+SPRING_RABBITMQ_HOST=your-rabbitmq-host
+SPRING_RABBITMQ_PORT=5671
+SPRING_RABBITMQ_USERNAME=your-username
+SPRING_RABBITMQ_PASSWORD=your-password
+SPRING_RABBITMQ_VIRTUAL_HOST=your-vhost
+SPRING_RABBITMQ_SSL_ENABLED=true
+
+# Security Configuration
+JWT_SECRET=your-jwt-secret-key
+API_KEY=your-api-key
+
+# Server Configuration
+SERVER_PORT=8080
+```
+
+### Application Properties
+Key configuration in `application.properties`:
+```properties
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Security Configuration
+spring.security.user.name=none
+spring.security.user.password=none
+```
 
 ## Message Queue Integration
-The service listens for the following events from RabbitMQ:
+### RabbitMQ Configuration
+```properties
+rabbitmq.queue.user.name=user-creation-queue
+rabbitmq.exchange.name=booking-exchange
+rabbitmq.routing.user.key=user.creation
+```
+
+### Event Handling
+The service processes the following events:
 - User creation events from Booking Service
-- Booking count increment events
+  - Creates new users automatically
+  - Updates existing user information if needed
+  - Manages user roles and permissions
 
 ## API Documentation
 
 ### User Management Endpoints
 
-| Method | Endpoint | Description | Auth Required |
+| Method | Endpoint | Description | Access |
 |--------|----------|-------------|--------------|
-| GET | `/users` | Get list of all users | Yes |
-| GET | `/users/{id}` | Get user by ID | Yes |
-| GET | `/users/email/{email}` | Get user by email address | No |
-| POST | `/users` | Create a new user | Yes |
-| PUT | `/users/update` | Update user information | No |
-| DELETE | `/users/{id}` | Delete user by ID | Yes |
+| GET | `/users` | Get list of all users | USER/ADMIN |
+| GET | `/users/{id}` | Get user by ID | USER/ADMIN |
+| GET | `/users/email/{email}` | Get user by email address | USER/ADMIN |
+| POST | `/users` | Create a new user | USER/ADMIN |
+| PUT | `/users/update` | Update user information | USER/ADMIN |
+| DELETE | `/users/{id}` | Delete user by ID | USER/ADMIN |
+
 
 ### User Payload Examples
 

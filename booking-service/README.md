@@ -1,161 +1,141 @@
 # Booking Service
 
 ## Overview
-The Booking Service is a microservice component of the Illawarra Cleaning Project, responsible for managing cleaning service bookings and quotations. It handles the entire booking lifecycle, from initial quotation to booking completion, while communicating with other services.
+The Booking Service is a core microservice of the Illawarra Cleaning Project that handles booking management and quotations for cleaning services. It provides RESTful APIs for creating, managing, and tracking cleaning service bookings while integrating with other microservices.
 
 ## Features
-- **Quotation Management**
-  - Get price quotes for cleaning services
-  - Cache quotations for 30 minutes
-  - Convert quotations to bookings
 - **Booking Management**
-  - Create new cleaning service bookings
-  - Retrieve and search bookings
-  - Update booking information
-  - Manage booking statuses
-- **Integration Features**
-  - Price calculation via Price Service
-  - User management via RabbitMQ
-  - Cached quotation system
+  - Create and manage cleaning service bookings
+  - Track booking status (PENDING, CONFIRMED, CANCELLED, COMPLETED)
+  - Support for different service types (REGULAR_CLEANING, DEEP_CLEANING, etc.)
+  - Address validation with Google Maps API
+  - Booking reference system for customer tracking
 
-## Technologies
+- **Quotation System**
+  - Real-time price calculations via pricing service
+  - Integration with RabbitMQ for service communication
+  - Support for cleaning service add-ons
+
+- **User Integration**
+  - User event publishing to user service
+  - Email-based booking retrieval
+  - Role-based access control (Admin/User)
+
+## Tech Stack
 - Java 17
 - Spring Boot 3.2.5
-- Spring Cloud OpenFeign
-- Spring Data JPA
-- PostgreSQL
-- RabbitMQ
-- Caffeine Cache
-- Docker
+- PostgreSQL (Database)
+- RabbitMQ (Message Broker)
+- Google Maps API (Address Validation)
+- Docker & Docker Compose
 - Maven
 
 ## Prerequisites
+- Java 17+
 - Docker and Docker Compose
-- Java 17 or higher
 - Maven 3.x
 - PostgreSQL
 - RabbitMQ
+- Google Maps API Key
+
+## Configuration
+### Environment Variables
+```properties
+# Database Configuration
+SPRING_DATASOURCE_URL=your-database-url
+SPRING_DATASOURCE_USERNAME=your-username
+SPRING_DATASOURCE_PASSWORD=your-password
+
+# RabbitMQ Configuration
+SPRING_RABBITMQ_HOST=your-rabbitmq-host
+SPRING_RABBITMQ_PORT=5671
+SPRING_RABBITMQ_USERNAME=your-username
+SPRING_RABBITMQ_PASSWORD=your-password
+SPRING_RABBITMQ_VIRTUAL_HOST=your-vhost
+SPRING_RABBITMQ_SSL_ENABLED=true
+
+# Google Maps Configuration
+GOOGLE_MAPS_API_KEY=your-api-key
+
+# Security
+JWT_SECRET=your-jwt-secret
+```
 
 ## API Endpoints
 
-### Quotation Endpoints
-```
-POST   /api/quotations         - Create a new quotation
-GET    /api/quotations/{id}    - Get quotation by ID
-```
-
 ### Booking Endpoints
-```
-POST   /api/bookings          - Create a new booking
-GET    /api/bookings          - Get all bookings
-GET    /api/bookings/{id}     - Get booking by ID
-GET    /api/bookings/user/{email} - Get bookings by user email
-GET    /api/bookings/status/{status} - Get bookings by status
-GET    /api/bookings/date-range - Get bookings within date range
-PUT    /api/bookings/{id}     - Update a booking
-PATCH  /api/bookings/{id}/status - Update booking status
-DELETE /api/bookings/{id}     - Delete a booking
-```
 
-## Sample Requests
+| Method | Endpoint                                 | Description                        | Access         |
+|--------|------------------------------------------|------------------------------------|----------------|
+| POST   | `/api/bookings`                          | Create new booking                 | User/Admin     |
+| GET    | `/api/bookings`                          | Get all bookings                   | Admin          |
+| GET    | `/api/bookings/{id}`                     | Get booking by ID                  | Admin          |
+| GET    | `/api/bookings/user/{email}`             | Get user's bookings                | User/Admin     |
+| GET    | `/api/bookings/status/{status}`          | Get bookings by status             | Admin          |
+| GET    | `/api/bookings/date-range`               | Get bookings in date range         | Admin          |
+| PUT    | `/api/bookings/{id}`                     | Update booking                     | Admin          |
+| PATCH  | `/api/bookings/{id}/status`              | Update booking status              | Admin          |
+| DELETE | `/api/bookings/{id}`                     | Delete booking                     | Admin          |
+| GET    | `/api/bookings/reference/{ref}`          | Get booking by reference           | User/Admin     |
+| PUT    | `/api/bookings/reference/{ref}`          | Update booking by reference        | User/Admin     |
 
-### Create Quotation
-```json
-{
-  "serviceType": "REGULAR_CLEANING",
-  "duration": 2.5,
-  "addons": ["WINDOW_CLEANING", "CARPET_CLEANING"]
-}
-```
+### Quotation Endpoints
 
-### Create Booking with Quotation
-```json
-{
-  "userEmail": "test@example.com",
-  "firstName": "John",
-  "lastName": "Doe",
-  "phoneNumber": 61412345678,
-  "scheduledAt": "2025-05-22T10:00:00",
-  "quotationId": "uuid-from-quotation",
-  "notes": "Please bring eco-friendly cleaning products",
-  "address": {
-    "street": "123 Main Street",
-    "city": "Wollongong",
-    "state": "NSW",
-    "postalCode": "2500",
-    "country": "Australia"
-  }
-}
-```
+| Method | Endpoint                  | Description           | Access     |
+|--------|---------------------------|-----------------------|------------|
+| POST   | `/api/quotations`         | Create quotation      | User/Admin |
+| GET    | `/api/quotations/{id}`    | Get quotation by ID   | User/Admin |
 
-## Configuration
-Configuration is managed through:
-- `application.properties` - Main application settings
-- `.env` - Environment variables
-- `docker-compose.yml` - Container configuration
+## Running the Service
 
-### Key Properties
-```properties
-# Application
-spring.application.name=booking-service
-server.port=8082
-
-# Database
-spring.datasource.url=${SPRING_DATASOURCE_URL}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-
-# RabbitMQ
-spring.rabbitmq.host=${SPRING_RABBITMQ_HOST}
-spring.rabbitmq.port=${SPRING_RABBITMQ_PORT}
-```
-
-## Development
-
-### Building the Service
+### Local Development
 ```bash
-mvn clean package
+# Build the project
+mvn clean install
+
+# Run the application
+mvn spring-boot:run
 ```
 
-### Running Tests
+### Docker Development
 ```bash
-mvn test
-```
-
-### Docker Build
-```bash
+# Build the Docker image
 docker build -t booking-service -f DockerFile.dev .
+
+# Run with Docker Compose
+docker-compose -f docker-compose.dev.yml up
 ```
 
-### Docker Compose
+## Testing
 ```bash
-docker-compose up -d
+# Run unit tests
+mvn test
+
+# Run integration tests
+mvn verify
 ```
 
-## Troubleshooting
+## Service Dependencies
+- **User Service** - User management and authentication
+- **Pricing Service** - Price calculations and quotations
+- **RabbitMQ** - Message broker for service communication
+- **PostgreSQL** - Primary database
+- **Google Maps API** - Address validation
 
-### Common Issues
-1. **Quotation Not Found**
-   - Quotations expire after 30 minutes
-   - Verify quotationId is correct
-   - Create a new quotation if expired
-
-2. **RabbitMQ Connection**
-   - Check RabbitMQ is running
-   - Verify credentials in .env
-   - Ensure ports are accessible
-
-3. **Database Connection**
-   - Verify PostgreSQL is running
-   - Check database credentials
-   - Ensure schema exists
+## Error Handling
+The service includes comprehensive error handling for:
+- Invalid bookings
+- Address validation failures
+- Quotation errors
+- Authentication/Authorization errors
+- Database constraints
 
 ## Contributing
 1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the LICENSE file for details
