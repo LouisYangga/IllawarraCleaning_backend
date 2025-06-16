@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.booking_service.client.PricingServiceClient;
 import com.example.booking_service.dto.AddressValidationResult;
 import com.example.booking_service.dto.AdminBookingDTO;
 import com.example.booking_service.dto.CreateBookingDTO;
@@ -30,15 +31,16 @@ public class BookingService {
     private final UserEventPublisher userEventPublisher;
     private final QuotationService quotationService;
     private final AddressValidationService addressValidationService;
-
+    private final PricingServiceClient pricingServiceClient;
     public BookingService(BookingRepository bookingRepository, BookingMapper bookingMapper,
     UserEventPublisher userEventPublisher, QuotationService quotationService,
-    AddressValidationService addressValidationService) {
+    AddressValidationService addressValidationService, PricingServiceClient pricingServiceClient) {
         this.quotationService = quotationService;
         this.userEventPublisher = userEventPublisher;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
         this.addressValidationService = addressValidationService;
+        this.pricingServiceClient = pricingServiceClient;
     }
     
     // Create
@@ -73,7 +75,16 @@ public class BookingService {
             booking.setDuration(quotation.getDuration());
             booking.setAddons(quotation.getAddons());
         }
-        
+        if(booking.getPrice() == null || booking.getPrice() <= 0) {
+            // If no price is set, calculate it using the pricing service
+            QuotationRequest request = new QuotationRequest(
+                booking.getServiceType(),
+                booking.getAddons(),
+                booking.getDuration()
+            );
+            Double calculatedPrice = pricingServiceClient.calculatePrice(request);
+            booking.setPrice(calculatedPrice);
+        }
         Booking savedBooking = bookingRepository.save(booking);
 
         //Publish user creation event to notify user services

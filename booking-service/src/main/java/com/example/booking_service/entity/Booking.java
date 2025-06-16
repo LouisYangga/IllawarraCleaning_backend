@@ -51,7 +51,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;  // PENDING, CONFIRMED, CANCELLED, COMPLETED
     private double duration; //in hours
-    private double price; //in dollars
+    private Double price; //in dollars
     private String notes;
     
     @Embedded

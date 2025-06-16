@@ -9,6 +9,7 @@ import com.example.pricing_service.dto.ServicePriceUpdateDTO;
 import com.example.pricing_service.dto.AddonPriceDTO;
 import com.example.pricing_service.dto.AddonPriceUpdateDTO;
 import com.example.pricing_service.dto.PriceCalculationRequest;
+import com.example.pricing_service.dto.PriceCalculationResponse;
 import com.example.pricing_service.entity.ServiceType;
 import com.example.pricing_service.entity.AddOns;
 import com.example.pricing_service.service.PricingService;
@@ -28,9 +29,9 @@ public class PricingController {
 
     // Price calculation endpoint (used by the booking service)
     @PostMapping("/calculate")
-    public ResponseEntity<Double> calculatePrice(@Valid @RequestBody PriceCalculationRequest request) {
-        double price = pricingService.calculatePrice(request);
-        return ResponseEntity.ok(price);
+    public ResponseEntity<PriceCalculationResponse> calculatePrice(@Valid @RequestBody PriceCalculationRequest request) {
+        PriceCalculationResponse response = pricingService.calculatePrice(request);
+        return ResponseEntity.ok(response);
     }
 
     // Service Price endpoints

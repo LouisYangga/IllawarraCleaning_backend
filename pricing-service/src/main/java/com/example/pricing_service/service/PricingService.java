@@ -8,6 +8,7 @@ import com.example.pricing_service.dto.ServicePriceUpdateDTO;
 import com.example.pricing_service.dto.AddonPriceDTO;
 import com.example.pricing_service.dto.AddonPriceUpdateDTO;
 import com.example.pricing_service.dto.PriceCalculationRequest;
+import com.example.pricing_service.dto.PriceCalculationResponse;
 import com.example.pricing_service.entity.ServicePrice;
 import com.example.pricing_service.entity.AddonPrice;
 import com.example.pricing_service.entity.ServiceType;
@@ -42,7 +43,7 @@ public class PricingService {
     }
 
     // Calculate total price for a service request
-    public double calculatePrice(PriceCalculationRequest request) {
+    public PriceCalculationResponse calculatePrice(PriceCalculationRequest request) {
         ServicePrice servicePrice = servicePriceRepository.findByServiceType(request.getServiceType())
                 .orElseThrow(() -> new IllegalArgumentException("Service type not found: " + request.getServiceType()));
 
@@ -56,8 +57,32 @@ public class PricingService {
                     .mapToDouble(AddonPrice::getPrice)
                     .sum();
         }
+        PriceCalculationResponse response = new PriceCalculationResponse();
+        response.setPrice(total);
+        response.setServiceType(request.getServiceType());
+        response.setAddons(request.getAddons());
+        response.setDuration(request.getDuration());
+        //set calculation details
+        StringBuilder details = new StringBuilder();
+        details.append("Base Price: ").append(servicePrice.getBasePrice())
+            .append(", Hourly Rate: ").append(servicePrice.getHourlyRate())
+            .append(", Duration: ").append(request.getDuration());
 
-        return total;
+        if (request.getAddons() != null && !request.getAddons().isEmpty()) {
+            Set<AddonPrice> addonPrices = addonPriceRepository.findByAddonIn(request.getAddons());
+            details.append(", Addons: [");
+            details.append(
+            addonPrices.stream()
+                .map(ap -> ap.getAddon() + ": " + ap.getPrice())
+                .collect(Collectors.joining(", "))
+            );
+            details.append("]");
+        } else {
+            details.append(", Addons: None");
+        }
+
+        response.setCalculationDetails(details.toString());
+        return response;
     }
 
     // Service Price CRUD operations

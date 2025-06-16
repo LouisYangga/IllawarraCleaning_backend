@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.pricing_service.dto.PriceCalculationRequest;
+import com.example.pricing_service.dto.PriceCalculationResponse;
 import com.example.pricing_service.dto.QuotationEvent;
 import com.example.pricing_service.service.PricingService;
 
@@ -29,8 +30,8 @@ public class QuotationEventListener {
                 event.getDuration()
             );
             // Calculate total price including base price, duration-based cost, and addons
-            double calculatedPrice = pricingService.calculatePrice(request);
-
+            PriceCalculationResponse response = pricingService.calculatePrice(request);
+            Double calculatedPrice = response.getPrice();
             // Update event with calculated price
             event.setPrice(calculatedPrice);
             event.setStatus("COMPLETED");
