@@ -1,5 +1,6 @@
 package com.example.booking_service.service;
 
+import java.lang.StackWalker.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -180,7 +181,11 @@ public class BookingService {
                 });
     }
 
-
+    public Optional<AdminBookingDTO> lookUpBookingByReference(String reference) {
+        return bookingRepository.findByReferenceWithAddons(reference)
+                .map(bookingMapper::toAdminDTO);
+    }
+    
     private <T> boolean isPriceUpdateRequired(Booking existingBooking, T updateDTO) {
         if (updateDTO instanceof UpdateBookingDTO) {
             UpdateBookingDTO adminUpdate = (UpdateBookingDTO) updateDTO;

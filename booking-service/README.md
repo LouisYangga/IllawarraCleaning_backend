@@ -73,6 +73,7 @@ JWT_SECRET=your-jwt-secret
 | GET    | `/api/bookings/user/{email}`             | Get user's bookings                | User/Admin     |
 | GET    | `/api/bookings/status/{status}`          | Get bookings by status             | Admin          |
 | GET    | `/api/bookings/date-range`               | Get bookings in date range         | Admin          |
+| GET    | `/api/bookings/admin/lookup/{reference}`          | Get bookings with ID by reference             | Admin          |
 | PUT    | `/api/bookings/{id}`                     | Update booking                     | Admin          |
 | PATCH  | `/api/bookings/{id}/status`              | Update booking status              | Admin          |
 | DELETE | `/api/bookings/{id}`                     | Delete booking                     | Admin          |

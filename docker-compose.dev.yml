@@ -20,8 +20,9 @@ services:
         JAVA_TOOL_OPTIONS: >-
           -Dspring.devtools.restart.enabled=true
           -Dspring-boot.run.fork=false
-      # depends_on:
-      #   - rabbitmq
+      depends_on:
+        # - rabbitmq
+        - pricing-service
       networks:
         - illawarra-network
       restart: unless-stopped

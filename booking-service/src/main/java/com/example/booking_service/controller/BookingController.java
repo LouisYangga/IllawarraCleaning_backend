@@ -143,6 +143,13 @@ public class BookingController {
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElse(bookingsNotFoundResponse());
     }
+    @GetMapping("admin/lookup/{reference}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getBookingByReferenceForAdmin(@PathVariable String reference) {
+        return bookingService.lookUpBookingByReference(reference)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(bookingsNotFoundResponse());
+    }
     @PutMapping("/reference/{reference}")
     public ResponseEntity<?> updateBookingWithReference(@PathVariable String reference, @RequestBody UserUpdateBookingDTO updateBookingDto) {
         return bookingService.updateBookingWithReference(reference, updateBookingDto)
