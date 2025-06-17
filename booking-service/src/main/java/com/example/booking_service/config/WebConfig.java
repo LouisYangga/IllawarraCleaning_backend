@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiKeyInterceptor)
                 .addPathPatterns("/api/**") // This will protect all paths under /api/
-                .excludePathPatterns("/api/bookiings/health"); // Example of excluding health check endpoint
+                .excludePathPatterns("/api/bookings/health"); // Example of excluding health check endpoint
     }
 
     @Override

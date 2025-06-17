@@ -35,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Skip JWT validation for public endpoints
         return path.startsWith("/api/bookings/reference/") ||
                (path.equals("/api/bookings") && method.equals("POST")) ||
-               path.startsWith("/api/quotations"); // Allow all quotation endpoints without JWT
+               path.startsWith("/api/quotations") || path.equals("/api/bookings/health"); // Allow all quotation endpoints without JWT
     }
 
     @Override
