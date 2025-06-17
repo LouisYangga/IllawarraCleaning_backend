@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/bookings/reference/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/bookings").permitAll()
                 .requestMatchers("/api/quotations/**").permitAll()
-                
+                .requestMatchers("/api/bookings/health").permitAll()
                 // Admin only endpoints
                 .requestMatchers(HttpMethod.GET,"/api/bookings").hasRole("ADMIN")
                 .requestMatchers("/api/bookings/status/**").hasRole("ADMIN")

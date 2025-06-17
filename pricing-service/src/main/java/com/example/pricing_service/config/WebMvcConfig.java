@@ -23,7 +23,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiKeyInterceptor)
                .addPathPatterns("/api/**")          // Apply to all price endpoints
-               .excludePathPatterns("/api/prices/calculate"); // Exclude price calculation endpoint
+               .excludePathPatterns("/api/prices/calculate")
+               .excludePathPatterns("/api/prices/health"); // Exclude price calculation endpoint
     }
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/prices/services", "/api/prices/services/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/prices/addons", "/api/prices/addons/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/prices/calculate").permitAll()
+                .requestMatchers("/api/prices/health").permitAll()
                 
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
