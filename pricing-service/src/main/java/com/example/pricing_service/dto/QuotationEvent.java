@@ -1,5 +1,6 @@
 package com.example.pricing_service.dto;
 
+import java.util.List;
 import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import com.example.pricing_service.entity.AddOns;
 public class QuotationEvent {
     private String quotationId;
     private ServiceType serviceType;
-    private Set<AddOns> addons;
+    private List<AddOns> addons;
     private double duration;
     private Double price;
     private String status;

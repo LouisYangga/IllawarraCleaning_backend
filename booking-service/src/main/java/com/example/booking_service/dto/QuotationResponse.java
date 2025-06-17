@@ -1,6 +1,7 @@
 package com.example.booking_service.dto;
 
-import java.util.Set;
+import java.util.List;
+
 
 import com.example.booking_service.entity.AddOns;
 import com.example.booking_service.entity.ServiceType;
@@ -17,5 +18,5 @@ public class QuotationResponse {
     private double price;
     private ServiceType serviceType;
     private double duration;
-    private Set<AddOns> addons;
+    private List<AddOns> addons;
 }

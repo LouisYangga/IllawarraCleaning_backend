@@ -1,12 +1,12 @@
 package com.example.booking_service.entity;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Data;
 
 @Data
 public class AddOnsUpdate {
-    private Set<AddOns> add;      // addons to add
-    private Set<AddOns> remove;   // addons to remove
-    private Set<AddOns> replace;  // completely replace existing addons
+    private List<AddOns> add;      // addons to add
+    private List<AddOns> remove;   // addons to remove
+    private List<AddOns> replace;  // completely replace existing addons
 }

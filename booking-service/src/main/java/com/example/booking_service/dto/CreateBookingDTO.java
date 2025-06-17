@@ -1,7 +1,9 @@
 package com.example.booking_service.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.booking_service.entity.Address;
@@ -40,5 +42,5 @@ public class CreateBookingDTO {
     @Embedded
     private Address address;
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    private Set<AddOns> addons = new HashSet<>();
+    private List<AddOns> addons = new ArrayList();
 }

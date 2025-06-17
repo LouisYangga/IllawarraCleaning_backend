@@ -1,7 +1,9 @@
 package com.example.booking_service.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.booking_service.entity.Address;
@@ -29,5 +31,5 @@ public class BaseBookingDTO {
     private double price;
     private String notes;
     private Address address;
-    private Set<AddOns> addons = new HashSet<>();
+    private List<AddOns> addons = new ArrayList();
 }

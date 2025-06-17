@@ -7,13 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.example.booking_service.entity.AddOns;
-import java.util.Set;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuotationRequest {
     private ServiceType serviceType;
-    private Set<AddOns> addons;
+    private List<AddOns> addons;
     private double duration;
 }

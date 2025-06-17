@@ -19,7 +19,7 @@ import com.example.pricing_service.repository.ServicePriceRepository;
 import com.example.pricing_service.repository.AddonPriceRepository;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,9 +52,12 @@ public class PricingService {
 
         // Add addon prices if any
         if (request.getAddons() != null && !request.getAddons().isEmpty()) {
-            Set<AddonPrice> addonPrices = addonPriceRepository.findByAddonIn(request.getAddons());
+            // Count occurrences of each addon
+            Map<AddOns, Long> addonCounts = request.getAddons().stream()
+                    .collect(Collectors.groupingBy(a -> a, Collectors.counting()));
+            List<AddonPrice> addonPrices = addonPriceRepository.findByAddonIn(request.getAddons());
             total += addonPrices.stream()
-                    .mapToDouble(AddonPrice::getPrice)
+                    .mapToDouble(ap -> ap.getPrice() * addonCounts.getOrDefault(ap.getAddon(), 0L))
                     .sum();
         }
         PriceCalculationResponse response = new PriceCalculationResponse();
@@ -69,11 +72,18 @@ public class PricingService {
             .append(", Duration: ").append(request.getDuration());
 
         if (request.getAddons() != null && !request.getAddons().isEmpty()) {
-            Set<AddonPrice> addonPrices = addonPriceRepository.findByAddonIn(request.getAddons());
+            // Count occurrences of each addon
+            Map<AddOns, Long> addonCounts = request.getAddons().stream()
+            .collect(Collectors.groupingBy(a -> a, Collectors.counting()));
+
+            List<AddonPrice> addonPrices = addonPriceRepository.findByAddonIn(request.getAddons());
             details.append(", Addons: [");
             details.append(
             addonPrices.stream()
-                .map(ap -> ap.getAddon() + ": " + ap.getPrice())
+                .map(ap -> {
+                long count = addonCounts.getOrDefault(ap.getAddon(), 0L);
+                return ap.getAddon() + " x" + count + ": " + ap.getPrice();
+                })
                 .collect(Collectors.joining(", "))
             );
             details.append("]");

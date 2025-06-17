@@ -37,7 +37,9 @@ public class BookingController {
             BaseBookingDTO createdBooking = bookingService.createBooking(createBookingDto);
             return ResponseEntity.ok(createdBooking);
         } catch (IllegalStateException e) {
-            return bookingsNotFoundResponse();
+            System.out.println("Error creating booking: " + e.getMessage());
+            return ResponseEntity.badRequest()
+                .body(java.util.Collections.singletonMap("message", e.getMessage()));
         }
     }
 

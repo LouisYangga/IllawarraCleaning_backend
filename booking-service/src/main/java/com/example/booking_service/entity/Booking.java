@@ -1,9 +1,9 @@
 package com.example.booking_service.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -16,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.SequenceGenerator;
@@ -64,7 +65,8 @@ public class Booking {
     @ElementCollection(targetClass = AddOns.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "booking_addons", joinColumns = @JoinColumn(name = "booking_id"))
-    private Set<AddOns> addons = new HashSet<>();
+    @OrderColumn(name = "addon_order") 
+    private List<AddOns> addons = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

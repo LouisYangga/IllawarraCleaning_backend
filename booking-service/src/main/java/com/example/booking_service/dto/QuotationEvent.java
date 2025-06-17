@@ -6,8 +6,8 @@ import com.example.booking_service.entity.AddOns;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import java.util.Set;
 
+import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +15,7 @@ import java.util.Set;
 public class QuotationEvent {
     private String quotationId;
     private ServiceType serviceType;
-    private Set<AddOns> addons;
+    private List<AddOns> addons;
     private double duration;
     private Double price;
     private String status;

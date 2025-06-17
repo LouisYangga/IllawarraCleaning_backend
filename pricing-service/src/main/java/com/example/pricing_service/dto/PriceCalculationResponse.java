@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 
 import com.example.pricing_service.entity.AddOns;
 import com.example.pricing_service.entity.ServiceType;
-import java.util.Set;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +15,7 @@ import java.util.Set;
 public class PriceCalculationResponse {
     private Double price;
     private ServiceType serviceType;
-    private Set<AddOns> addons;
+    private List<AddOns> addons;
     private Double duration;
     private String calculationDetails;
 }

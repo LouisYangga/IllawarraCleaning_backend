@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import java.util.Set;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class PriceCalculationRequest {
     @NotNull
     private ServiceType serviceType;
 
-    private Set<AddOns> addons;
+    private List<AddOns> addons;
 
     @NotNull
     @Positive
