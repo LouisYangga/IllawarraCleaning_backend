@@ -16,11 +16,15 @@ import com.example.pricing_service.service.PricingService;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/api/prices")
 public class PricingController {
-
     private final PricingService pricingService;
 
     public PricingController(PricingService pricingService) {
@@ -96,5 +100,34 @@ public class PricingController {
     public ResponseEntity<Void> deleteAddonPrice(@PathVariable AddOns addon) {
         pricingService.deleteAddonPrice(addon);
         return ResponseEntity.noContent().build();
+    }
+
+    // Health check endpoint
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, Object>> healthCheck() {
+        Map<String, Object> healthStatus = new HashMap<>();
+        
+        // Basic service status
+        healthStatus.put("status", "UP");
+        healthStatus.put("timestamp", Instant.now().toString());
+        
+        // Service uptime
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        long uptime = runtimeMXBean.getUptime();
+        healthStatus.put("uptime", uptime);
+        
+        // Memory information
+        Runtime runtime = Runtime.getRuntime();
+        long totalMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        long usedMemory = totalMemory - freeMemory;
+        
+        Map<String, Long> memoryInfo = new HashMap<>();
+        memoryInfo.put("total", totalMemory);
+        memoryInfo.put("free", freeMemory);
+        memoryInfo.put("used", usedMemory);
+        healthStatus.put("memory", memoryInfo);
+        
+        return ResponseEntity.ok(healthStatus);
     }
 }

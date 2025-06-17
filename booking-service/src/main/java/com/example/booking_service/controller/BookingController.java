@@ -24,9 +24,13 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/bookings")
 public class BookingController {
     private final BookingService bookingService;
+    private final long startTime;
+
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
+        this.startTime = System.currentTimeMillis();
     }
+
     private ResponseEntity<?> bookingsNotFoundResponse() {
         return ResponseEntity.status(404)
                 .body(java.util.Collections.singletonMap("message", "No booking(s) found"));
@@ -158,7 +162,25 @@ public class BookingController {
         .<ResponseEntity<?>>map(ResponseEntity::ok)
         .orElse(bookingsNotFoundResponse());
     }
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        Runtime runtime = Runtime.getRuntime();
+        long totalMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        long uptime = System.currentTimeMillis() - startTime;
 
+        var healthData = new java.util.HashMap<String, Object>();
+        healthData.put("status", "UP");
+        healthData.put("timestamp", LocalDateTime.now());
+        healthData.put("uptime", uptime);
+        healthData.put("memory", new java.util.HashMap<String, Object>() {{
+            put("total", totalMemory);
+            put("free", freeMemory);
+            put("used", totalMemory - freeMemory);
+        }});
+
+        return ResponseEntity.ok(healthData);
+    }
 
     
 }
