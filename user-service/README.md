@@ -101,6 +101,17 @@ The service processes the following events:
 | POST | `/users` | Create a new user | USER/ADMIN |
 | PUT | `/users/update` | Update user information | USER/ADMIN |
 | DELETE | `/users/{id}` | Delete user by ID | ADMIN |
+| GET/HEAD | `/users/health` | Service health and uptime | Public |
+
+### Admin Management Endpoints
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/admin/create` | Create a new admin | ADMIN |
+| POST | `/admin/login` | Admin login (returns JWT) | ADMIN |
+| GET | `/admin` | Get all admins | ADMIN |
+| GET | `/admin/email/{email}` | Get admin by email | ADMIN |
+| DELETE | `/admin/delete/{email}` | Delete admin by email | ADMIN |
 
 
 ### User Payload Examples
@@ -192,7 +203,12 @@ The service processes events in the following way:
    - Missing required fields
 
 ## Monitoring and Maintenance
-- Service health endpoint: `/actuator/health`
+
+- **Service health endpoint:** `/api/users/health`
+  - Supports both `GET` and `HEAD` requests.
+  - `GET` returns a JSON body with service status, uptime, and memory info.
+  - `HEAD` returns only headers (no body), as per HTTP specification.
+  - This endpoint is public and can be used with monitoring tools like UptimeRobot to check service availability and prevent server spin-down.
 - RabbitMQ queues status: Access RabbitMQ management UI (port 15672)
 - Database monitoring through PostgreSQL tools
 

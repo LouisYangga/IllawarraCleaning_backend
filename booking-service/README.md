@@ -75,27 +75,28 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
 
 ### Booking Endpoints
 
-| Method | Endpoint                                 | Description                        | Access         |
-|--------|------------------------------------------|------------------------------------|----------------|
-| POST   | `/api/bookings`                          | Create new booking                 | User/Admin     |
-| GET    | `/api/bookings`                          | Get all bookings                   | Admin          |
-| GET    | `/api/bookings/{id}`                     | Get booking by ID                  | Admin          |
-| GET    | `/api/bookings/user/{email}`             | Get user's bookings                | User/Admin     |
-| GET    | `/api/bookings/status/{status}`          | Get bookings by status             | Admin          |
-| GET    | `/api/bookings/date-range`               | Get bookings in date range         | Admin          |
-| GET    | `/api/admin/bookings/lookup/{reference}` | Get booking details by reference   | Admin          |
-| PUT    | `/api/bookings/{id}`                     | Update booking                     | Admin          |
-| PATCH  | `/api/bookings/{id}/status`              | Update booking status              | Admin          |
-| DELETE | `/api/bookings/{id}`                     | Delete booking                     | Admin          |
-| GET    | `/api/bookings/reference/{ref}`          | Get booking by reference           | User/Admin     |
-| PUT    | `/api/bookings/reference/{ref}`          | Update booking by reference        | User/Admin     |
+| Method     | Endpoint                                 | Description                                         | Access         |
+|------------|-------------------------------------------|-----------------------------------------------------|---------------|
+| POST       | `/api/bookings`                          | Create a new booking                                | Public        |
+| GET        | `/api/bookings`                          | Get all bookings                                    | Admin         |
+| GET        | `/api/bookings/{id}`                     | Get booking by ID                                   | Admin         |
+| GET        | `/api/bookings/user/{email}`             | Get bookings by user email                          | Public        |
+| GET        | `/api/bookings/status/{status}`          | Get bookings by status                              | Admin         |
+| GET        | `/api/bookings/date-range?start=...&end=...` | Get bookings within a date range                 | Admin         |
+| PUT        | `/api/bookings/{id}`                     | Update booking by ID                                | Admin         |
+| PATCH      | `/api/bookings/{id}/status?status=...`   | Update booking status by ID                         | Admin         |
+| DELETE     | `/api/bookings/{id}`                     | Delete booking by ID                                | Admin         |
+| GET        | `/api/bookings/reference/{reference}`     | Get booking by reference                            | Public        |
+| GET        | `/api/bookings/admin/lookup/{reference}`  | Admin lookup booking by reference                   | Admin         |
+| PUT        | `/api/bookings/reference/{reference}`     | Update booking by reference (user)                  | Public        |
+| GET/HEAD   | `/api/bookings/health`                   | Service health and uptime                           | Public        |
 
 ### Quotation Endpoints
 
-| Method | Endpoint                  | Description           | Access     |
-|--------|---------------------------|-----------------------|------------|
-| POST   | `/api/quotations`         | Create quotation      | User/Admin |
-| GET    | `/api/quotations/{id}`    | Get quotation by ID   | User/Admin |
+| Method     | Endpoint                                 | Description                                         | Access         |
+|------------|------------------------------------------|-----------------------------------------------------|---------------|
+| POST       | `/api/quotations`                        | Create a new quotation and return details           | Public        |
+| GET        | `/api/quotations/{quotationId}`          | Retrieve a quotation by its ID                      | Public        |
 
 ## Deployment
 
@@ -139,6 +140,13 @@ The service includes comprehensive error handling for:
 - Authentication/Authorization errors
 - Database constraints
 - CORS and security restrictions
+
+## Monitoring and Maintenance
+- **Service health endpoint:** `/api/bookings/health`
+  - Supports both `GET` and `HEAD` requests.
+  - `GET` returns a JSON body with service status, uptime, and memory info.
+  - `HEAD` returns only headers (no body), as per HTTP specification.
+  - This endpoint is public and can be used with monitoring tools like UptimeRobot to check service availability and prevent server spin-down.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details

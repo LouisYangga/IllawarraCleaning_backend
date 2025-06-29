@@ -59,14 +59,22 @@ SERVER_PORT=8084
 
 ## API Endpoints
 
-### Price Calculation
-| Method | Endpoint                        | Description                                      | Access |
-|--------|---------------------------------|--------------------------------------------------|------------------|
-| POST   | `/api/prices/calculate`         | Calculate price for a service                    | USER/ADMIN             |
-| GET    | `/api/prices/service-types`     | Get all service types with base prices           | USER/ADMIN             |
-| GET    | `/api/prices/addons`            | Get all available add-ons with prices            | USER/ADMIN             |
-| POST   | `/api/prices/service-types`     | Add a new service type price to the database     | ADMIN            |
-| POST   | `/api/prices/addons`            | Add a new add-on price to the database           | ADMIN            |
+### Pricing Endpoints
+
+| Method     | Endpoint                        | Description                                 | Access         |
+|------------|----------------------------------|---------------------------------------------|---------------|
+| POST       | `/api/prices/calculate`         | Calculate price for a booking               | Internal      |
+| GET        | `/api/prices/services`          | Get all service prices                      | Public        |
+| GET        | `/api/prices/services/{type}`   | Get price for a specific service type       | Public        |
+| POST       | `/api/prices/services`          | Create a new service price                  | Admin         |
+| PUT        | `/api/prices/services/{type}`   | Update a service price                      | Admin         |
+| DELETE     | `/api/prices/services/{type}`   | Delete a service price                      | Admin         |
+| GET        | `/api/prices/addons`            | Get all addon prices                        | Public        |
+| GET        | `/api/prices/addons/{addon}`    | Get price for a specific addon              | Public        |
+| POST       | `/api/prices/addons`            | Create a new addon price                    | Admin         |
+| PUT        | `/api/prices/addons/{addon}`    | Update an addon price                       | Admin         |
+| DELETE     | `/api/prices/addons/{addon}`    | Delete an addon price                       | Admin         |
+| GET/HEAD   | `/api/prices/health`            | Service health and uptime                   | Public        |
 
 ## Message Queue Topics
 - `quotation.calculation` - Receive quotation calculation requests
@@ -150,6 +158,13 @@ The service calculates prices based on:
 - Price calculation metrics
 - Error rate monitoring
 - Request/Response timing
+
+## Monitoring and Maintenance
+- **Service health endpoint:** `/api/prices/health`
+  - Supports both `GET` and `HEAD` requests.
+  - `GET` returns a JSON body with service status, uptime, and memory info.
+  - `HEAD` returns only headers (no body), as per HTTP specification.
+  - This endpoint is public and can be used with monitoring tools like UptimeRobot to check service availability and prevent server spin-down.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details
